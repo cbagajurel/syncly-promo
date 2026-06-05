@@ -1,0 +1,25 @@
+{
+  "name": "syncly-promo",
+  "version": "1.0.0",
+  "description": "Syncly launch promotional video built with Remotion",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render SynclyPromo out/syncly-promo.mp4 --codec=h264",
+    "still": "remotion still SynclyPromo --frame=0 out/still.png"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "@remotion/google-fonts": "^4.0.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.5.0"
+  },
+  "remotion": {
+    "entrypoint": "src/index.ts"
+  }
+}
