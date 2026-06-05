@@ -8,7 +8,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { C, FONT, MONO } from "../constants";
+import { C, FONT, MONO, SPRING } from "../constants";
 
 // ── Shared: macOS-style app window frame ─────────────────────────────────────
 const AppFrame = ({
@@ -59,10 +59,130 @@ const AppFrame = ({
   </div>
 );
 
+// ── Shared primitives ─────────────────────────────────────────────────────────
+const Avatar = ({
+  initials,
+  color,
+  size = 30,
+}: {
+  initials: string;
+  color: string;
+  size?: number;
+}) => (
+  <div
+    style={{
+      width: size,
+      height: size,
+      borderRadius: "50%",
+      background: color,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: size * 0.37,
+      fontWeight: 600,
+      color: "#fff",
+      fontFamily: FONT,
+      flexShrink: 0,
+    }}
+  >
+    {initials}
+  </div>
+);
+
+const Dot = ({ color, size = 7 }: { color: string; size?: number }) => (
+  <span
+    style={{
+      display: "inline-block",
+      width: size,
+      height: size,
+      borderRadius: "50%",
+      background: color,
+      flexShrink: 0,
+    }}
+  />
+);
+
+const Chip = ({ label, muted }: { label: string; muted?: boolean }) => (
+  <div
+    style={{
+      padding: "4px 10px",
+      border: `1px solid ${C.BORDER1}`,
+      borderRadius: 6,
+      fontFamily: FONT,
+      fontSize: 11,
+      fontWeight: 500,
+      color: muted ? C.FG2 : C.FG0,
+      background: C.BG2,
+    }}
+  >
+    {label}
+  </div>
+);
+
+const Btn = ({ label, accent }: { label: string; accent?: boolean }) => (
+  <div
+    style={{
+      padding: "5px 12px",
+      borderRadius: 6,
+      background: accent ? C.FG0 : C.BG2,
+      border: `1px solid ${accent ? C.FG0 : C.BORDER1}`,
+      fontFamily: FONT,
+      fontSize: 11,
+      fontWeight: 600,
+      color: accent ? C.BG1 : C.FG1,
+    }}
+  >
+    {label}
+  </div>
+);
+
+const FieldBlock = ({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) => (
+  <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+    <span
+      style={{
+        fontFamily: MONO,
+        fontSize: 10,
+        fontWeight: 500,
+        letterSpacing: "0.07em",
+        textTransform: "uppercase",
+        color: C.FG3,
+      }}
+    >
+      {label}
+    </span>
+    {children}
+  </div>
+);
+
 // ── Mockup 1: Compose ─────────────────────────────────────────────────────────
+const CAPTION_TEXT = "Excited to share our latest drop with you all...";
+
 const ComposeMockup = () => {
   const frame = useCurrentFrame();
-  const cursorOn = Math.floor(frame / 20) % 2 === 0;
+  const { fps } = useVideoConfig();
+
+  // Typing animation — characters appear over time
+  const typingStart = 20;
+  const charsPerFrame = 0.5;
+  const elapsed = Math.max(0, frame - typingStart);
+  const visibleChars = Math.min(
+    Math.floor(elapsed * charsPerFrame),
+    CAPTION_TEXT.length
+  );
+  const isTyping = visibleChars < CAPTION_TEXT.length && elapsed > 0;
+  const cursorBlink = Math.floor(frame / 16) % 2 === 0;
+
+  // Phone preview updates with slight delay
+  const phoneTextChars = Math.min(
+    Math.floor(Math.max(0, elapsed - 10) * charsPerFrame),
+    CAPTION_TEXT.length
+  );
 
   const topbarBtns = (
     <div
@@ -196,7 +316,7 @@ const ComposeMockup = () => {
             </div>
           </FieldBlock>
 
-          {/* Caption */}
+          {/* Caption with typing */}
           <FieldBlock label="Caption">
             <div
               style={{
@@ -211,8 +331,8 @@ const ComposeMockup = () => {
                 lineHeight: 1.6,
               }}
             >
-              Excited to share our latest drop with you all...
-              {cursorOn && (
+              {CAPTION_TEXT.slice(0, visibleChars)}
+              {isTyping && cursorBlink && (
                 <span
                   style={{
                     display: "inline-block",
@@ -221,6 +341,19 @@ const ComposeMockup = () => {
                     background: C.ACCENT,
                     marginLeft: 1,
                     verticalAlign: "text-bottom",
+                  }}
+                />
+              )}
+              {!isTyping && visibleChars > 0 && (
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: 1.5,
+                    height: 15,
+                    background: C.ACCENT,
+                    marginLeft: 1,
+                    verticalAlign: "text-bottom",
+                    opacity: cursorBlink ? 1 : 0,
                   }}
                 />
               )}
@@ -238,7 +371,7 @@ const ComposeMockup = () => {
                     color: C.FG3,
                   }}
                 >
-                  42 / 2200
+                  {visibleChars} / 2200
                 </span>
               </div>
             </div>
@@ -320,7 +453,7 @@ const ComposeMockup = () => {
             <div
               style={{
                 flex: 1,
-                background: `linear-gradient(160deg, #1a1a2e 0%, #2d1b69 100%)`,
+                background: "#1a1a2e",
               }}
             />
             <div
@@ -331,7 +464,8 @@ const ComposeMockup = () => {
                 fontFamily: FONT,
               }}
             >
-              Excited to share our latest drop...
+              {CAPTION_TEXT.slice(0, Math.min(phoneTextChars, 38))}
+              {phoneTextChars < 38 ? "" : "..."}
             </div>
           </div>
         </div>
@@ -349,9 +483,9 @@ const CONVOS = [
 ];
 
 const MESSAGES = [
-  { text: "Hey, is this still available? Saw it on Instagram 👀",  out: false },
-  { text: "Yes! Still in stock in sizes S–XL. Want me to hold one for you?", out: true },
-  { text: "That'd be amazing, I'll take a medium please!",          out: false },
+  { text: "Hey, is this still available? Saw it on Instagram 👀",  out: false, delay: 10 },
+  { text: "Yes! Still in stock in sizes S–XL. Want me to hold one for you?", out: true, delay: 30 },
+  { text: "That'd be amazing, I'll take a medium please!",          out: false, delay: 55 },
 ];
 
 const InboxMockup = () => {
@@ -424,15 +558,15 @@ const InboxMockup = () => {
             ))}
           </div>
 
-          {/* Conversation rows */}
+          {/* Conversation rows — staggered slide-in */}
           {CONVOS.map((c, i) => {
             const rowP = spring({
-              frame: Math.max(0, frame - i * 8),
+              frame: Math.max(0, frame - i * 10),
               fps,
               config: { damping: 22, stiffness: 160 },
             });
-            const rowY = interpolate(rowP, [0, 1], [16, 0]);
-            const rowOpacity = interpolate(rowP, [0, 0.4], [0, 1], {
+            const rowY = interpolate(rowP, [0, 1], [20, 0]);
+            const rowOpacity = interpolate(rowP, [0, 0.35], [0, 1], {
               extrapolateRight: "clamp",
             });
 
@@ -581,7 +715,7 @@ const InboxMockup = () => {
             </div>
           </div>
 
-          {/* Messages */}
+          {/* Messages — sequential appearance */}
           <div
             style={{
               flex: 1,
@@ -594,14 +728,14 @@ const InboxMockup = () => {
           >
             {MESSAGES.map((m, i) => {
               const msgP = spring({
-                frame: Math.max(0, frame - i * 10 - 10),
+                frame: Math.max(0, frame - m.delay),
                 fps,
                 config: { damping: 20, stiffness: 150 },
               });
-              const msgOpacity = interpolate(msgP, [0, 0.4], [0, 1], {
+              const msgOpacity = interpolate(msgP, [0, 0.35], [0, 1], {
                 extrapolateRight: "clamp",
               });
-              const msgY = interpolate(msgP, [0, 1], [14, 0]);
+              const msgY = interpolate(msgP, [0, 1], [18, 0]);
 
               return (
                 <div
@@ -681,25 +815,47 @@ const InboxMockup = () => {
 };
 
 // ── Mockup 3: AI Auto-Reply ───────────────────────────────────────────────────
+const AI_REPLY_TEXT = "Hey! We're open Mon–Sat 9AM–6PM EST. And yes — we ship worldwide! 🚀 Anything else I can help with?";
+
 const AIMockup = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const TYPING_END = 35;
+  const TYPING_END = 40;
   const isTyping = frame < TYPING_END;
 
+  // Typing dots bounce
   const dot = (phase: number) =>
-    0.35 + 0.65 * Math.abs(Math.sin((frame / fps) * Math.PI * 2.8 + phase));
+    0.3 + 0.7 * Math.abs(Math.sin((frame / fps) * Math.PI * 2.8 + phase));
+
+  // AI reply types in character by character
+  const replyStart = TYPING_END;
+  const replyElapsed = Math.max(0, frame - replyStart);
+  const replyChars = Math.min(
+    Math.floor(replyElapsed * 1.2),
+    AI_REPLY_TEXT.length
+  );
+  const replyDone = replyChars >= AI_REPLY_TEXT.length;
 
   const replyP = spring({
     frame: Math.max(0, frame - TYPING_END),
     fps,
     config: { damping: 18, stiffness: 130 },
   });
-  const replyOpacity = interpolate(replyP, [0, 0.4], [0, 1], {
+  const replyOpacity = interpolate(replyP, [0, 0.3], [0, 1], {
     extrapolateRight: "clamp",
   });
-  const replyY = interpolate(replyP, [0, 1], [16, 0]);
+  const replyY = interpolate(replyP, [0, 1], [14, 0]);
+
+  // Confirmation check
+  const checkP = spring({
+    frame: Math.max(0, frame - TYPING_END - Math.ceil(AI_REPLY_TEXT.length / 1.2) - 8),
+    fps,
+    config: SPRING.SNAPPY,
+  });
+  const checkOpacity = interpolate(checkP, [0, 0.4], [0, 1], {
+    extrapolateRight: "clamp",
+  });
 
   return (
     <AppFrame style={{ height: "100%" }}>
@@ -771,7 +927,7 @@ const AIMockup = () => {
           overflowY: "hidden",
         }}
       >
-        {/* Customer */}
+        {/* Customer message */}
         <div style={{ display: "flex", gap: 8 }}>
           <Avatar initials="AM" color="#7C3AED" size={28} />
           <div
@@ -865,8 +1021,7 @@ const AIMockup = () => {
                 lineHeight: 1.55,
               }}
             >
-              Hey! We're open Mon–Sat 9AM–6PM EST. And yes — we ship
-              worldwide! 🚀 Anything else I can help with?
+              {AI_REPLY_TEXT.slice(0, replyChars)}
             </div>
             <div
               style={{
@@ -889,11 +1044,11 @@ const AIMockup = () => {
         )}
 
         {/* Confirmation */}
-        {!isTyping && (
+        {replyDone && (
           <div
             style={{
               marginTop: 4,
-              opacity: replyOpacity,
+              opacity: checkOpacity,
               display: "flex",
               alignItems: "center",
               gap: 6,
@@ -953,10 +1108,10 @@ const AIMockup = () => {
 
 // ── Mockup 4: Knowledge Base ──────────────────────────────────────────────────
 const KB_DOCS = [
-  { icon: "📄", name: "Brand Guidelines.pdf",  chunks: 42, status: "Active",     statusColor: C.OK   },
-  { icon: "📝", name: "Product FAQ.docx",       chunks: 88, status: "Active",     statusColor: C.OK   },
-  { icon: "📃", name: "Shipping Policy.txt",    chunks: 17, status: "Active",     statusColor: C.OK   },
-  { icon: "✦",  name: "Learned responses",      chunks: 36, status: "Growing",    statusColor: C.ACCENT },
+  { icon: "📄", name: "Brand Guidelines.pdf",  chunks: 42, status: "Active",  statusColor: C.OK    },
+  { icon: "📝", name: "Product FAQ.docx",       chunks: 88, status: "Active",  statusColor: C.OK    },
+  { icon: "📃", name: "Shipping Policy.txt",    chunks: 17, status: "Active",  statusColor: C.OK    },
+  { icon: "✦",  name: "Learned responses",      chunks: 36, status: "Growing", statusColor: C.ACCENT },
 ];
 
 const KnowledgeMockup = () => {
@@ -1007,7 +1162,7 @@ const KnowledgeMockup = () => {
         ))}
       </div>
 
-      {/* Doc list — 2×2 grid */}
+      {/* Doc list — waterfall from right */}
       <div
         style={{
           padding: "12px 16px",
@@ -1017,13 +1172,24 @@ const KnowledgeMockup = () => {
         }}
       >
         {KB_DOCS.map((doc, i) => {
-          const p = spring({
-            frame: Math.max(0, frame - i * 10),
+          // Waterfall: each card slides in from right
+          const cardP = spring({
+            frame: Math.max(0, frame - i * 12),
             fps,
-            config: { damping: 22, stiffness: 160 },
+            config: { damping: 20, stiffness: 140 },
           });
-          const rowY = interpolate(p, [0, 1], [18, 0]);
-          const rowOpacity = interpolate(p, [0, 0.4], [0, 1], {
+          const cardX = interpolate(cardP, [0, 1], [30, 0]);
+          const cardOpacity = interpolate(cardP, [0, 0.35], [0, 1], {
+            extrapolateRight: "clamp",
+          });
+
+          // Status badge fades in after card settles
+          const badgeP = spring({
+            frame: Math.max(0, frame - i * 12 - 18),
+            fps,
+            config: SPRING.SNAPPY,
+          });
+          const badgeOpacity = interpolate(badgeP, [0, 0.4], [0, 1], {
             extrapolateRight: "clamp",
           });
 
@@ -1038,8 +1204,8 @@ const KnowledgeMockup = () => {
                 background: C.BG2,
                 border: `1px solid ${C.BORDER0}`,
                 borderRadius: 8,
-                transform: `translateY(${rowY}px)`,
-                opacity: rowOpacity,
+                transform: `translateX(${cardX}px)`,
+                opacity: cardOpacity,
               }}
             >
               <span
@@ -1086,6 +1252,7 @@ const KnowledgeMockup = () => {
                   fontFamily: MONO,
                   fontSize: 10,
                   fontWeight: 600,
+                  opacity: badgeOpacity,
                 }}
               >
                 {doc.status}
@@ -1098,108 +1265,7 @@ const KnowledgeMockup = () => {
   );
 };
 
-// ── Shared primitives ─────────────────────────────────────────────────────────
-const Avatar = ({
-  initials,
-  color,
-  size = 30,
-}: {
-  initials: string;
-  color: string;
-  size?: number;
-}) => (
-  <div
-    style={{
-      width: size,
-      height: size,
-      borderRadius: "50%",
-      background: color,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontSize: size * 0.37,
-      fontWeight: 600,
-      color: "#fff",
-      fontFamily: FONT,
-      flexShrink: 0,
-    }}
-  >
-    {initials}
-  </div>
-);
-
-const Dot = ({ color, size = 7 }: { color: string; size?: number }) => (
-  <span
-    style={{
-      display: "inline-block",
-      width: size,
-      height: size,
-      borderRadius: "50%",
-      background: color,
-      flexShrink: 0,
-    }}
-  />
-);
-
-const Chip = ({ label, muted }: { label: string; muted?: boolean }) => (
-  <div
-    style={{
-      padding: "4px 10px",
-      border: `1px solid ${C.BORDER1}`,
-      borderRadius: 6,
-      fontFamily: FONT,
-      fontSize: 11,
-      fontWeight: 500,
-      color: muted ? C.FG2 : C.FG0,
-      background: C.BG2,
-    }}
-  >
-    {label}
-  </div>
-);
-
-const Btn = ({ label, accent }: { label: string; accent?: boolean }) => (
-  <div
-    style={{
-      padding: "5px 12px",
-      borderRadius: 6,
-      background: accent ? C.FG0 : C.BG2,
-      border: `1px solid ${accent ? C.FG0 : C.BORDER1}`,
-      fontFamily: FONT,
-      fontSize: 11,
-      fontWeight: 600,
-      color: accent ? C.BG1 : C.FG1,
-    }}
-  >
-    {label}
-  </div>
-);
-
-const FieldBlock = ({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) => (
-  <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-    <span
-      style={{
-        fontFamily: MONO,
-        fontSize: 10,
-        fontWeight: 500,
-        letterSpacing: "0.07em",
-        textTransform: "uppercase",
-        color: C.FG3,
-      }}
-    >
-      {label}
-    </span>
-    {children}
-  </div>
-);
-
-// ── Feature card with slide-in/out transition ────────────────────────────────
+// ── Feature slide with staggered left panel ──────────────────────────────────
 const FeatureSlide = ({
   number,
   label,
@@ -1219,38 +1285,49 @@ const FeatureSlide = ({
   const { fps } = useVideoConfig();
 
   const ENTER = 22;
-  const EXIT_START = dur - 18;
+  const EXIT_START = dur - 16;
 
   // Spring enter from right
   const enterP = spring({
     frame,
     fps,
-    config: { damping: 22, stiffness: 130 },
+    config: SPRING.SMOOTH,
     durationInFrames: ENTER * 2,
   });
-  const enterX = interpolate(enterP, [0, 1], [80, 0], {
+  const enterX = interpolate(enterP, [0, 1], [60, 0], {
     easing: Easing.out(Easing.cubic),
   });
-  const enterOpacity = interpolate(enterP, [0, 0.4], [0, 1], {
+  const enterOpacity = interpolate(enterP, [0, 0.35], [0, 1], {
     extrapolateRight: "clamp",
   });
 
-  // Linear exit to left
+  // Exit — fade + shift left
   const exitProgress = interpolate(frame, [EXIT_START, dur], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const exitX = interpolate(exitProgress, [0, 1], [0, -80]);
+  const exitX = interpolate(exitProgress, [0, 1], [0, -60]);
   const exitOpacity = interpolate(exitProgress, [0, 1], [1, 0]);
 
-  // Left panel stagger
-  const leftP = spring({
-    frame: Math.max(0, frame - 5),
+  // Left panel — staggered clip-mask reveals
+  // Number first
+  const numP = spring({
+    frame: Math.max(0, frame - 4),
     fps,
-    config: { damping: 22, stiffness: 130 },
+    config: SPRING.SNAPPY,
   });
-  const leftY = interpolate(leftP, [0, 1], [30, 0]);
-  const leftOpacity = interpolate(leftP, [0, 0.4], [0, 1], {
+  const numOpacity = interpolate(numP, [0, 0.3], [0, 1], {
+    extrapolateRight: "clamp",
+  });
+
+  // Title
+  const titleP = spring({
+    frame: Math.max(0, frame - 10),
+    fps,
+    config: SPRING.SMOOTH,
+  });
+  const titleY = interpolate(titleP, [0, 1], [100, 0]);
+  const titleOpacity = interpolate(titleP, [0, 0.3], [0, 1], {
     extrapolateRight: "clamp",
   });
 
@@ -1260,7 +1337,9 @@ const FeatureSlide = ({
         transform: `translateX(${enterX + exitX}px)`,
         opacity: Math.min(enterOpacity, exitOpacity),
         display: "flex",
+        flexDirection: "row",
         alignItems: "center",
+        justifyContent: "center",
         paddingInline: 120,
         gap: 80,
         background: C.BG0,
@@ -1273,8 +1352,6 @@ const FeatureSlide = ({
           display: "flex",
           flexDirection: "column",
           gap: 24,
-          transform: `translateY(${leftY}px)`,
-          opacity: leftOpacity,
         }}
       >
         {/* Number + label */}
@@ -1287,6 +1364,7 @@ const FeatureSlide = ({
             fontSize: 11,
             letterSpacing: "0.1em",
             color: C.FG3,
+            opacity: numOpacity,
           }}
         >
           <span style={{ color: C.ACCENT, fontWeight: 600 }}>{number}</span>
@@ -1296,50 +1374,68 @@ const FeatureSlide = ({
           <span>{label.toUpperCase()}</span>
         </div>
 
-        {/* Title */}
-        <h2
-          style={{
-            margin: 0,
-            fontFamily: FONT,
-            fontSize: 52,
-            fontWeight: 700,
-            letterSpacing: "-0.035em",
-            lineHeight: 1.1,
-            color: C.FG0,
-            whiteSpace: "pre-line",
-          }}
-        >
-          {title}
-        </h2>
+        {/* Title — clip-mask reveal */}
+        <div style={{ overflow: "hidden" }}>
+          <h2
+            style={{
+              margin: 0,
+              fontFamily: FONT,
+              fontSize: 52,
+              fontWeight: 700,
+              letterSpacing: "-0.035em",
+              lineHeight: 1.1,
+              color: C.FG0,
+              whiteSpace: "pre-line",
+              transform: `translateY(${titleY}%)`,
+              opacity: titleOpacity,
+            }}
+          >
+            {title}
+          </h2>
+        </div>
 
-        {/* Bullets */}
+        {/* Bullets — staggered one by one */}
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {bullets.map((b) => (
-            <div
-              key={b}
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 10,
-                fontFamily: FONT,
-                fontSize: 17,
-                color: C.FG2,
-                lineHeight: 1.5,
-              }}
-            >
-              <span
+          {bullets.map((b, i) => {
+            const bP = spring({
+              frame: Math.max(0, frame - 18 - i * 8),
+              fps,
+              config: SPRING.SMOOTH,
+            });
+            const bY = interpolate(bP, [0, 1], [20, 0]);
+            const bOpacity = interpolate(bP, [0, 0.3], [0, 1], {
+              extrapolateRight: "clamp",
+            });
+
+            return (
+              <div
+                key={b}
                 style={{
-                  color: C.OK,
-                  fontWeight: 700,
-                  flexShrink: 0,
-                  marginTop: 1,
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 10,
+                  fontFamily: FONT,
+                  fontSize: 17,
+                  color: C.FG2,
+                  lineHeight: 1.5,
+                  transform: `translateY(${bY}px)`,
+                  opacity: bOpacity,
                 }}
               >
-                ✓
-              </span>
-              {b}
-            </div>
-          ))}
+                <span
+                  style={{
+                    color: C.OK,
+                    fontWeight: 700,
+                    flexShrink: 0,
+                    marginTop: 1,
+                  }}
+                >
+                  ✓
+                </span>
+                {b}
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -1362,7 +1458,7 @@ const FEATURES = [
       "Image, Carousel & Reels",
     ],
     Mockup: ComposeMockup,
-    dur: 75,
+    dur: 135,
   },
   {
     number: "02", label: "Messaging",
@@ -1373,7 +1469,7 @@ const FEATURES = [
       "Read receipts & history",
     ],
     Mockup: InboxMockup,
-    dur: 75,
+    dur: 135,
   },
   {
     number: "03", label: "Automation",
@@ -1384,7 +1480,7 @@ const FEATURES = [
       "Escalates when needed",
     ],
     Mockup: AIMockup,
-    dur: 75,
+    dur: 135,
   },
   {
     number: "04", label: "Intelligence",
@@ -1395,7 +1491,7 @@ const FEATURES = [
       "Hybrid semantic search",
     ],
     Mockup: KnowledgeMockup,
-    dur: 75,
+    dur: 135,
   },
 ] as const;
 

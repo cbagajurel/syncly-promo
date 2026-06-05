@@ -55,15 +55,23 @@ export const C = {
 } as const;
 
 export const FPS = 30;
-export const TOTAL_FRAMES = FPS * 35; // 35s
+export const TOTAL_FRAMES = FPS * 45; // 45s
 
 export const SCENE = {
-  HOOK:     { from: FPS * 0,  dur: FPS * 6  },
-  PAIN:     { from: FPS * 6,  dur: FPS * 4  },
-  REVEAL:   { from: FPS * 10, dur: FPS * 4  },
-  FEATURES: { from: FPS * 14, dur: FPS * 10 },
-  OUTCOME:  { from: FPS * 24, dur: FPS * 5  },
-  CTA:      { from: FPS * 29, dur: FPS * 6  },
+  HOOK:     { from: FPS * 0,  dur: FPS * 7  },
+  PAIN:     { from: FPS * 7,  dur: FPS * 6  },
+  REVEAL:   { from: FPS * 13, dur: FPS * 4  },
+  FEATURES: { from: FPS * 17, dur: FPS * 18 },
+  OUTCOME:  { from: FPS * 35, dur: FPS * 5  },
+  CTA:      { from: FPS * 40, dur: FPS * 5  },
 } as const;
 
-export const FADE = 14;
+export const FADE = 12;
+
+// Reusable spring presets
+export const SPRING = {
+  SNAPPY:  { damping: 26, stiffness: 200, mass: 0.7 },
+  SMOOTH:  { damping: 22, stiffness: 140, mass: 0.85 },
+  HEAVY:   { damping: 18, stiffness: 100, mass: 1.2 },
+  BOUNCY:  { damping: 14, stiffness: 120, mass: 0.9 },
+} as const;

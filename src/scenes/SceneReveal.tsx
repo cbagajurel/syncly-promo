@@ -1,54 +1,72 @@
-import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
-import { C, FONT, MONO } from "../constants";
+import { AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { C, FONT, MONO, SPRING } from "../constants";
 import { Logo } from "../components/Logo";
 
 export const SceneReveal = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Logo scales in with spring
+  // Logo — crisp scale-in with slight overshoot
   const logoP = spring({
     frame,
     fps,
-    config: { damping: 16, stiffness: 100, mass: 1.2 },
-    from: 0.88,
+    config: { damping: 14, stiffness: 140, mass: 0.9 },
+    from: 0.85,
     to: 1,
   });
-  const logoOpacity = interpolate(frame, [0, 18], [0, 1], {
+  const logoOpacity = interpolate(frame, [0, 16], [0, 1], {
     extrapolateRight: "clamp",
   });
 
+  // Expanding ring behind logo
+  const ringP = spring({
+    frame: Math.max(0, frame - 8),
+    fps,
+    config: { damping: 30, stiffness: 120, mass: 1.2 },
+  });
+  const ringSize = interpolate(ringP, [0, 1], [40, 280]);
+  const ringOpacity = interpolate(ringP, [0, 0.3, 1], [0, 0.5, 0.15]);
+
   // Horizontal rule extends
   const lineP = spring({
-    frame: Math.max(0, frame - 24),
+    frame: Math.max(0, frame - 26),
     fps,
     config: { damping: 30, stiffness: 280 },
   });
   const lineW = interpolate(lineP, [0, 1], [0, 440]);
 
-  // Tagline
-  const tagP = spring({
-    frame: Math.max(0, frame - 46),
+  // "One dashboard." — first line
+  const line1P = spring({
+    frame: Math.max(0, frame - 42),
     fps,
-    config: { damping: 24, stiffness: 160 },
+    config: SPRING.SMOOTH,
   });
-  const tagOpacity = interpolate(tagP, [0, 0.4], [0, 1], {
+  const line1Opacity = interpolate(line1P, [0, 0.35], [0, 1], {
     extrapolateRight: "clamp",
   });
-  const tagY = interpolate(tagP, [0, 1], [22, 0]);
+  const line1Y = interpolate(line1P, [0, 1], [20, 0]);
 
-  // Mono tag
-  const monoP = spring({
-    frame: Math.max(0, frame - 68),
+  // "Every conversation." — second line, delayed
+  const line2P = spring({
+    frame: Math.max(0, frame - 56),
+    fps,
+    config: SPRING.SMOOTH,
+  });
+  const line2Opacity = interpolate(line2P, [0, 0.35], [0, 1], {
+    extrapolateRight: "clamp",
+  });
+  const line2Y = interpolate(line2P, [0, 1], [20, 0]);
+
+  // Platform list — left-to-right wipe
+  const wipeP = spring({
+    frame: Math.max(0, frame - 72),
     fps,
     config: { damping: 26, stiffness: 180 },
   });
-  const monoOpacity = interpolate(monoP, [0, 0.5], [0, 1], {
+  const wipeWidth = interpolate(wipeP, [0, 1], [0, 100]);
+  const wipeOpacity = interpolate(wipeP, [0, 0.3], [0, 1], {
     extrapolateRight: "clamp",
   });
-
-  // Subtle teal radial highlight
-  const glowOpacity = logoOpacity * 0.45;
 
   return (
     <AbsoluteFill
@@ -60,15 +78,15 @@ export const SceneReveal = () => {
         justifyContent: "center",
       }}
     >
-      {/* Soft radial behind logo */}
+      {/* Expanding circle ring behind logo — solid stroke, no gradient */}
       <div
         style={{
           position: "absolute",
-          width: 700,
-          height: 700,
+          width: ringSize,
+          height: ringSize,
           borderRadius: "50%",
-          background: `radial-gradient(circle, ${C.ACCENT_SOFT} 0%, transparent 62%)`,
-          opacity: glowOpacity,
+          border: `1.5px solid ${C.ACCENT}`,
+          opacity: ringOpacity,
           pointerEvents: "none",
         }}
       />
@@ -81,7 +99,7 @@ export const SceneReveal = () => {
           transformOrigin: "center",
         }}
       >
-        <Logo size={92} />
+        <Logo size={96} />
       </div>
 
       {/* HR */}
@@ -94,39 +112,62 @@ export const SceneReveal = () => {
         }}
       />
 
-      {/* Tagline */}
+      {/* "One dashboard." */}
       <div
         style={{
           marginTop: 32,
-          transform: `translateY(${tagY}px)`,
-          opacity: tagOpacity,
+          transform: `translateY(${line1Y}px)`,
+          opacity: line1Opacity,
           fontFamily: FONT,
-          fontSize: 30,
+          fontSize: 32,
           fontWeight: 400,
           letterSpacing: "-0.01em",
           color: C.FG2,
           textAlign: "center",
         }}
       >
-        One dashboard.{" "}
-        <span style={{ color: C.FG0, fontWeight: 600 }}>
-          Every conversation.
-        </span>
+        One dashboard.
       </div>
 
-      {/* Mono sub-line */}
+      {/* "Every conversation." — emphasis */}
       <div
         style={{
-          marginTop: 20,
-          opacity: monoOpacity,
-          fontFamily: MONO,
-          fontSize: 12,
-          color: C.FG3,
-          letterSpacing: "0.06em",
+          marginTop: 4,
+          transform: `translateY(${line2Y}px)`,
+          opacity: line2Opacity,
+          fontFamily: FONT,
+          fontSize: 32,
+          fontWeight: 700,
+          letterSpacing: "-0.02em",
+          color: C.FG0,
           textAlign: "center",
         }}
       >
-        Instagram · Facebook · WhatsApp — unified
+        Every conversation.
+      </div>
+
+      {/* Platform list — wipe reveal */}
+      <div
+        style={{
+          marginTop: 24,
+          overflow: "hidden",
+          width: `${wipeWidth}%`,
+          maxWidth: 400,
+          opacity: wipeOpacity,
+        }}
+      >
+        <div
+          style={{
+            fontFamily: MONO,
+            fontSize: 12,
+            color: C.FG3,
+            letterSpacing: "0.06em",
+            textAlign: "center",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Instagram · Facebook · WhatsApp — unified
+        </div>
       </div>
     </AbsoluteFill>
   );

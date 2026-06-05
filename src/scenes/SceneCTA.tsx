@@ -1,81 +1,96 @@
 import { AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
-import { C, FONT, MONO } from "../constants";
+import { C, FONT, MONO, SPRING } from "../constants";
 import { Logo } from "../components/Logo";
+import { DotGrid } from "../components/DotGrid";
 
 export const SceneCTA = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Logo
+  // Logo — scale with breathing
   const logoP = spring({
     frame,
     fps,
-    config: { damping: 16, stiffness: 100, mass: 1.2 },
-    from: 0.86,
+    config: SPRING.HEAVY,
+    from: 0.84,
     to: 1,
   });
-  const logoOpacity = interpolate(frame, [0, 20], [0, 1], {
+  const logoOpacity = interpolate(frame, [0, 18], [0, 1], {
     extrapolateRight: "clamp",
   });
 
+  // Subtle breathing on logo
+  const breathe = 1 + 0.005 * Math.sin((frame / fps) * Math.PI * 0.8);
+
   // HR line
   const lineP = spring({
-    frame: Math.max(0, frame - 22),
+    frame: Math.max(0, frame - 20),
     fps,
     config: { damping: 30, stiffness: 280 },
   });
   const lineW = interpolate(lineP, [0, 1], [0, 360]);
 
-  // Primary headline
+  // "Start free today." — scale-up entrance
   const h1P = spring({
-    frame: Math.max(0, frame - 38),
+    frame: Math.max(0, frame - 36),
     fps,
-    config: { damping: 22, stiffness: 150 },
-  });
-  const h1Opacity = interpolate(h1P, [0, 0.4], [0, 1], {
-    extrapolateRight: "clamp",
-  });
-  const h1Y = interpolate(h1P, [0, 1], [28, 0], {
-    easing: Easing.out(Easing.cubic),
-  });
-
-  // Sub-line
-  const subP = spring({
-    frame: Math.max(0, frame - 56),
-    fps,
-    config: { damping: 24, stiffness: 160 },
-  });
-  const subOpacity = interpolate(subP, [0, 0.4], [0, 1], {
-    extrapolateRight: "clamp",
-  });
-  const subY = interpolate(subP, [0, 1], [20, 0]);
-
-  // URL
-  const urlP = spring({
-    frame: Math.max(0, frame - 76),
-    fps,
-    config: { damping: 26, stiffness: 180 },
-  });
-  const urlOpacity = interpolate(urlP, [0, 0.5], [0, 1], {
-    extrapolateRight: "clamp",
-  });
-  const urlY = interpolate(urlP, [0, 1], [16, 0]);
-
-  // CTA button
-  const btnP = spring({
-    frame: Math.max(0, frame - 95),
-    fps,
-    config: { damping: 18, stiffness: 120, mass: 0.9 },
-    from: 0.88,
+    config: { damping: 16, stiffness: 130, mass: 0.85 },
+    from: 0.92,
     to: 1,
   });
-  const btnOpacity = interpolate(urlP, [0.3, 1], [0, 1], {
+  const h1Opacity = interpolate(frame, [36, 50], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  // Subtle breathing on logo
-  const breathe = 1 + 0.004 * Math.sin((frame / fps) * Math.PI * 0.9);
+  // Sub-line
+  const subP = spring({
+    frame: Math.max(0, frame - 52),
+    fps,
+    config: SPRING.SMOOTH,
+  });
+  const subOpacity = interpolate(subP, [0, 0.4], [0, 1], {
+    extrapolateRight: "clamp",
+  });
+  const subY = interpolate(subP, [0, 1], [16, 0]);
+
+  // URL — with underline draw
+  const urlP = spring({
+    frame: Math.max(0, frame - 70),
+    fps,
+    config: SPRING.SNAPPY,
+  });
+  const urlOpacity = interpolate(urlP, [0, 0.4], [0, 1], {
+    extrapolateRight: "clamp",
+  });
+  const urlY = interpolate(urlP, [0, 1], [14, 0]);
+
+  // Underline draw — after URL appears
+  const ulP = spring({
+    frame: Math.max(0, frame - 82),
+    fps,
+    config: { damping: 28, stiffness: 200 },
+  });
+  const ulWidth = interpolate(ulP, [0, 1], [0, 100]);
+
+  // CTA button — spring bounce
+  const btnP = spring({
+    frame: Math.max(0, frame - 92),
+    fps,
+    config: { damping: 12, stiffness: 150, mass: 0.8 },
+    from: 0.85,
+    to: 1,
+  });
+  const btnOpacity = interpolate(frame, [92, 104], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
+  // Mono note
+  const noteOpacity = interpolate(frame, [105, 118], [0, 0.45], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 
   return (
     <AbsoluteFill
@@ -88,20 +103,10 @@ export const SceneCTA = () => {
         gap: 0,
       }}
     >
-      {/* Soft radial */}
-      <div
-        style={{
-          position: "absolute",
-          width: 800,
-          height: 800,
-          borderRadius: "50%",
-          background: `radial-gradient(circle, ${C.ACCENT_SOFT} 0%, transparent 58%)`,
-          opacity: logoOpacity * 0.5,
-          pointerEvents: "none",
-        }}
-      />
+      {/* Subtle dot grid for texture */}
+      <DotGrid opacity={0.12} spacing={36} dotSize={0.8} />
 
-      {/* Logo */}
+      {/* Logo with breathing */}
       <div
         style={{
           transform: `scale(${logoP * breathe})`,
@@ -109,7 +114,7 @@ export const SceneCTA = () => {
           transformOrigin: "center",
         }}
       >
-        <Logo size={88} />
+        <Logo size={84} />
       </div>
 
       {/* HR */}
@@ -122,19 +127,20 @@ export const SceneCTA = () => {
         }}
       />
 
-      {/* Headline */}
+      {/* "Start free today." — scale-up */}
       <div
         style={{
           marginTop: 36,
-          transform: `translateY(${h1Y}px)`,
+          transform: `scale(${h1P})`,
           opacity: h1Opacity,
           fontFamily: FONT,
-          fontSize: 62,
+          fontSize: 60,
           fontWeight: 700,
           letterSpacing: "-0.04em",
           color: C.FG0,
           textAlign: "center",
           lineHeight: 1.05,
+          transformOrigin: "center",
         }}
       >
         Start free today.
@@ -143,11 +149,11 @@ export const SceneCTA = () => {
       {/* Sub */}
       <div
         style={{
-          marginTop: 16,
+          marginTop: 14,
           transform: `translateY(${subY}px)`,
           opacity: subOpacity,
           fontFamily: FONT,
-          fontSize: 22,
+          fontSize: 21,
           fontWeight: 400,
           letterSpacing: "-0.01em",
           color: C.FG2,
@@ -157,41 +163,61 @@ export const SceneCTA = () => {
         Connect your first account in under 2 minutes.
       </div>
 
-      {/* URL */}
+      {/* URL with underline draw */}
       <div
         style={{
-          marginTop: 48,
+          marginTop: 44,
           transform: `translateY(${urlY}px)`,
           opacity: urlOpacity,
-          fontFamily: MONO,
-          fontSize: 18,
-          fontWeight: 500,
-          color: C.ACCENT,
-          letterSpacing: "0.01em",
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
-          gap: 8,
+          gap: 3,
         }}
       >
-        trysyncly.com
-        <span style={{ opacity: 0.5 }}>→</span>
+        <div
+          style={{
+            fontFamily: MONO,
+            fontSize: 18,
+            fontWeight: 500,
+            color: C.ACCENT,
+            letterSpacing: "0.01em",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          trysyncly.com
+          <span style={{ opacity: 0.5 }}>→</span>
+        </div>
+        {/* Underline — draws left to right */}
+        <div
+          style={{
+            width: `${ulWidth}%`,
+            height: 1.5,
+            background: C.ACCENT,
+            borderRadius: 1,
+            maxWidth: 160,
+          }}
+        />
       </div>
 
-      {/* CTA button */}
+      {/* CTA button — spring bounce */}
       <div
         style={{
-          marginTop: 32,
+          marginTop: 28,
           transform: `scale(${btnP})`,
           opacity: btnOpacity,
           background: C.FG0,
           color: C.BG1,
           fontFamily: FONT,
-          fontSize: 18,
+          fontSize: 17,
           fontWeight: 600,
           letterSpacing: "-0.01em",
           borderRadius: 10,
-          padding: "14px 44px",
+          padding: "14px 42px",
           boxShadow: C.SHADOW_MD,
+          transformOrigin: "center",
         }}
       >
         Get started — it's free
@@ -200,8 +226,8 @@ export const SceneCTA = () => {
       {/* Tiny mono note */}
       <div
         style={{
-          marginTop: 20,
-          opacity: btnOpacity * 0.4,
+          marginTop: 18,
+          opacity: noteOpacity,
           fontFamily: MONO,
           fontSize: 11,
           color: C.FG3,
