@@ -1,0 +1,712 @@
+/* ── TAILWIND THEME TOKENS (Optimus light/cream) ────────────────── */
+/* Registers shadcn-style color/font/radius tokens so utility classes   */
+/* like bg-foreground, text-muted-foreground, border-foreground/10,      */
+/* font-display and font-mono resolve across the marketing site.         */
+@theme {
+  --color-background: oklch(0.985 0.002 90);
+  --color-foreground: oklch(0.12 0.01 60);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.12 0.01 60);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.12 0.01 60);
+  --color-primary: oklch(0.12 0.01 60);
+  --color-primary-foreground: oklch(0.985 0.002 90);
+  --color-secondary: oklch(0.96 0.005 90);
+  --color-secondary-foreground: oklch(0.12 0.01 60);
+  --color-muted: oklch(0.94 0.005 90);
+  --color-muted-foreground: oklch(0.45 0.02 60);
+  --color-accent: oklch(0.92 0.01 90);
+  --color-accent-foreground: oklch(0.12 0.01 60);
+  --color-destructive: oklch(0.577 0.245 27.325);
+  --color-destructive-foreground: oklch(0.985 0.002 90);
+  --color-border: oklch(0.88 0.01 90);
+  --color-input: oklch(0.92 0.01 90);
+  --color-ring: oklch(0.12 0.01 60);
+
+  --font-sans: "Instrument Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Geist Mono", ui-monospace, monospace;
+  --font-display: var(--font-instrument-serif), 'Instrument Serif', Georgia, serif;
+
+  --radius-sm: calc(0.25rem - 4px);
+  --radius-md: calc(0.25rem - 2px);
+  --radius-lg: 0.25rem;
+  --radius-xl: calc(0.25rem + 4px);
+}
+
+/* ── BASE DESIGN TOKENS ─────────────────────────────────────────── */
+/* Warm near-monochromatic palette (Optimus-inspired) */
+
+:root {
+  /* Backgrounds — warm cream to pure white */
+  --bg-0: oklch(0.985 0.002 90);
+  --bg-1: oklch(1 0 0);
+  --bg-2: oklch(0.94 0.005 90);
+  --bg-3: oklch(0.90 0.008 90);
+
+  /* Foregrounds — warm near-black to light gray */
+  --fg-0: oklch(0.12 0.01 60);
+  --fg-1: oklch(0.35 0.015 60);
+  --fg-2: oklch(0.52 0.015 60);
+  --fg-3: oklch(0.70 0.01 60);
+
+  /* Borders */
+  --border-0: oklch(0.87 0.008 90);
+  --border-1: oklch(0.83 0.01 90);
+
+  /* Shadows (warm tint) */
+  --shadow-sm: 0 1px 2px rgba(30, 20, 5, 0.04);
+  --shadow-md: 0 4px 24px -8px rgba(30, 20, 5, 0.10), 0 1px 2px rgba(30, 20, 5, 0.04);
+  --shadow-lg: 0 24px 60px -20px rgba(30, 20, 5, 0.16), 0 2px 6px rgba(30, 20, 5, 0.06);
+
+  /* Accent — emerald, matched to the dashboard brand (.dash-light) so the
+     landing page's primary (`bg-brand`/`text-brand`) is the same colour. */
+  --accent: oklch(0.6 0.16 145);
+  --accent-ink: oklch(0.5 0.15 145);
+  --accent-soft: oklch(0.6 0.16 145 / 0.1);
+  --accent-fg: oklch(0.99 0 0);
+
+  /* Platform identifiers (used as dots/accents only) */
+  --p-facebook: oklch(0.55 0.13 255);
+  --p-instagram: oklch(0.62 0.13 20);
+  --p-whatsapp: oklch(0.62 0.13 150);
+  --p-linkedin: oklch(0.50 0.11 245);
+  --p-messenger: oklch(0.60 0.18 280);
+  --p-tiktok: oklch(0.58 0.10 200);
+
+  /* Soft pastel palette — cohesive cool/violet family (wati-style).
+     Very light + low-chroma so it never strains.
+     `*-ink` is the readable accent for icons/labels sitting on the tint. */
+  --pastel-mint: oklch(0.957 0.034 200);
+  --pastel-mint-ink: oklch(0.50 0.11 200);
+  --pastel-lavender: oklch(0.957 0.038 292);
+  --pastel-lavender-ink: oklch(0.52 0.16 292);
+  --pastel-peach: oklch(0.958 0.035 30);
+  --pastel-peach-ink: oklch(0.56 0.13 30);
+  --pastel-sky: oklch(0.957 0.036 258);
+  --pastel-sky-ink: oklch(0.52 0.15 258);
+  --pastel-blush: oklch(0.957 0.035 350);
+  --pastel-blush-ink: oklch(0.56 0.15 350);
+
+  /* Status */
+  --ok: oklch(0.62 0.08 150);
+  --warn: oklch(0.72 0.10 75);
+  --err: oklch(0.60 0.13 25);
+
+  /* Typography */
+  --font-sans: "Instrument Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Geist Mono", ui-monospace, monospace;
+  --font-display: var(--font-instrument-serif), 'Instrument Serif', Georgia, serif;
+
+  /* Geometry — sharper corners */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+  --r-xl: 12px;
+}
+
+/* Chart / data-viz palette (shared light defaults; .dark overrides below) */
+:root {
+  --chart-1: oklch(0.6 0.16 220);
+  --chart-2: oklch(0.6 0.16 145);
+  --chart-3: oklch(0.7 0.16 55);
+  --chart-4: oklch(0.6 0.18 25);
+  --chart-5: oklch(0.6 0.14 300);
+}
+
+/* Dark surface scope — applied to dashboard + auth roots.
+   Palette ported from sales-ops-dashboard/app/globals.css:
+   deep blue-black surfaces + vivid emerald accent + saturated charts. */
+.dark {
+  color-scheme: dark;
+
+  /* Surfaces — deep blue-black → elevated cards */
+  --bg-0: oklch(0.09 0.005 260); /* app background */
+  --bg-1: oklch(0.12 0.005 260); /* cards / panels / popovers */
+  --bg-2: oklch(0.18 0.005 260); /* secondary / hover / inputs */
+  --bg-3: oklch(0.23 0.005 260); /* raised chips */
+  --sidebar-bg: oklch(0.11 0.005 260);
+
+  /* Foregrounds — near-white → muted gray */
+  --fg-0: oklch(0.96 0 0);
+  --fg-1: oklch(0.8 0 0);
+  --fg-2: oklch(0.65 0 0);
+  --fg-3: oklch(0.5 0 0);
+
+  /* Borders */
+  --border-0: oklch(0.22 0.005 260);
+  --border-1: oklch(0.28 0.006 260);
+
+  /* Accent — vivid emerald (the colour the old theme was missing) */
+  --accent: oklch(0.7 0.18 145);
+  --accent-ink: oklch(0.78 0.16 145);
+  --accent-soft: oklch(0.7 0.18 145 / 0.12);
+  --accent-fg: oklch(0.09 0.005 260);
+
+  /* Status */
+  --ok: oklch(0.7 0.18 145);
+  --warn: oklch(0.75 0.18 55);
+  --err: oklch(0.65 0.2 25);
+
+  /* Chart / data-viz palette */
+  --chart-1: oklch(0.7 0.18 220);
+  --chart-2: oklch(0.7 0.18 145);
+  --chart-3: oklch(0.75 0.18 55);
+  --chart-4: oklch(0.65 0.2 25);
+  --chart-5: oklch(0.7 0.15 300);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 28px -10px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.6);
+}
+
+/* Dashboard light scope — clean white surfaces + emerald accent
+   (sales-ops light palette). Scoped to `.dash-light` so the landing page's
+   own cream `:root` palette is never affected. Toggled against `.dark`. */
+.dash-light {
+  color-scheme: light;
+
+  --bg-0: oklch(0.985 0.002 260); /* app background */
+  --bg-1: oklch(1 0 0); /* cards / panels / popovers */
+  --bg-2: oklch(0.965 0.003 260); /* secondary / hover / inputs */
+  --color-input: oklch(0.94 0.005 260); /* match auth-page input visibility */
+  --bg-3: oklch(0.93 0.004 260); /* raised chips */
+  --sidebar-bg: oklch(0.99 0.002 260);
+
+  --fg-0: oklch(0.18 0.01 260);
+  --fg-1: oklch(0.34 0.01 260);
+  --fg-2: oklch(0.5 0.008 260);
+  --fg-3: oklch(0.62 0.006 260);
+
+  --border-0: oklch(0.91 0.004 260);
+  --border-1: oklch(0.86 0.005 260);
+
+  --accent: oklch(0.6 0.16 145);
+  --accent-ink: oklch(0.5 0.15 145);
+  --accent-soft: oklch(0.6 0.16 145 / 0.1);
+  --accent-fg: oklch(0.99 0 0);
+
+  --ok: oklch(0.6 0.16 145);
+  --warn: oklch(0.68 0.16 55);
+  --err: oklch(0.6 0.2 25);
+
+  --chart-1: oklch(0.6 0.16 220);
+  --chart-2: oklch(0.6 0.16 145);
+  --chart-3: oklch(0.65 0.16 55);
+  --chart-4: oklch(0.6 0.18 25);
+  --chart-5: oklch(0.6 0.14 300);
+
+  --shadow-sm: 0 1px 2px rgba(20, 20, 30, 0.05);
+  --shadow-md: 0 8px 28px -12px rgba(20, 20, 30, 0.14);
+  --shadow-lg: 0 24px 60px -20px rgba(20, 20, 30, 0.18);
+}
+
+/* ── RESET ──────────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg-0);
+  color: var(--fg-0);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+
+/* These element resets live in @layer base so Tailwind utility classes    */
+/* (text-foreground/70, text-primary-foreground, underline, …) override    */
+/* them. Unlayered rules would otherwise beat layered utilities and break   */
+/* the marketing-site colours (muted nav links, button text, link styles).  */
+@layer base {
+  button {
+    font-family: inherit;
+  }
+
+  button,
+  input,
+  textarea {
+    color: inherit;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+/* ── SCROLLBARS ─────────────────────────────────────────────────── */
+.scroll {
+  /* Smooth, contained, momentum scrolling */
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  /* Firefox scrollbar (webkit handled below) */
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--fg-3) 35%, transparent) transparent;
+}
+
+.scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--fg-3) 35%, transparent);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.scroll::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--fg-2) 50%, transparent);
+  background-clip: content-box;
+  border: 2px solid transparent;
+}
+
+/* ── REDUCED MOTION ─────────────────────────────────────────────── */
+/* Respect OS "reduce motion" setting: kill animations/auto-scroll,
+   keep transitions near-instant so nothing feels broken. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── UTILITIES ──────────────────────────────────────────────────── */
+.mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum" 1;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.hairline {
+  border: 1px solid var(--border-0);
+}
+
+/* Text stroke (for headings) */
+.text-stroke {
+  -webkit-text-stroke: 1.5px currentColor;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── BUTTONS ────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-0);
+  background: var(--bg-1);
+  color: var(--fg-0);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background: var(--bg-2);
+  border-color: var(--border-1);
+}
+
+.btn:active {
+  transform: translateY(0.5px);
+}
+
+.btn-primary {
+  background: var(--fg-0);
+  color: var(--bg-1);
+  border-color: var(--fg-0);
+}
+
+.btn-primary:hover {
+  background: color-mix(in oklab, var(--fg-0) 88%, var(--fg-2));
+}
+
+.btn-accent {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+}
+
+.btn-accent:hover {
+  filter: brightness(0.96);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+}
+
+.btn-ghost:hover {
+  background: var(--bg-2);
+}
+
+.btn-sm {
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: var(--r-sm);
+}
+
+/* Pill variant (Optimus-style rounded buttons) */
+.btn-pill {
+  border-radius: 999px;
+  padding: 12px 24px;
+  height: 52px;
+  font-size: 14px;
+}
+
+.btn-pill.btn-sm {
+  height: 36px;
+  padding: 6px 16px;
+  font-size: 12px;
+  border-radius: 999px;
+}
+
+/* ── INPUTS ─────────────────────────────────────────────────────── */
+.input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-0);
+  background: var(--bg-1);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 18%, transparent);
+}
+
+/* ── CARD ───────────────────────────────────────────────────────── */
+.card {
+  background: var(--bg-1);
+  border: 1px solid var(--border-0);
+  border-radius: var(--r-lg);
+}
+
+/* ── CHIP ───────────────────────────────────────────────────────── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border-0);
+  background: var(--bg-1);
+  font-size: 11px;
+  color: var(--fg-1);
+  font-weight: 500;
+}
+
+/* ── PLATFORM DOT ───────────────────────────────────────────────── */
+.pdot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ── SPARKLINE ──────────────────────────────────────────────────── */
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1000;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.spark path {
+  stroke-dasharray: 1000;
+  animation: draw 1.2s ease forwards;
+}
+
+/* ── SOFT SHADOWS (landing cards — friendly, violet-tinted) ─────── */
+.soft-shadow {
+  box-shadow: 0 16px 40px -24px rgba(60, 40, 120, 0.22);
+}
+
+.soft-shadow-lg {
+  box-shadow: 0 30px 64px -28px rgba(60, 40, 120, 0.30);
+}
+
+.soft-shadow-hover {
+  transition: box-shadow 220ms ease, transform 220ms ease;
+}
+
+.soft-shadow-hover:hover {
+  box-shadow: 0 24px 56px -26px rgba(60, 40, 120, 0.28);
+  transform: translateY(-3px);
+}
+
+/* ── LIFT EFFECTS ───────────────────────────────────────────────── */
+.lift {
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.lift:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-1);
+}
+
+/* Spring-eased hover lift (Optimus-style) */
+.hover-lift {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+/* ── FOCUS RING ─────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent) 70%, transparent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── PAGE TRANSITIONS ───────────────────────────────────────────── */
+.fade-in {
+  animation: fade 300ms ease both;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── MARQUEE ────────────────────────────────────────────────────── */
+.marquee {
+  animation: marquee 40s linear infinite;
+}
+
+.marquee-reverse {
+  animation: marquee-reverse 35s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* ── CHARACTER BLUR ANIMATION (Optimus hero words) ──────────────── */
+.animate-char-in {
+  display: inline-block;
+  animation: char-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+  filter: blur(40px);
+  transform: translateY(100%);
+}
+
+@keyframes char-in {
+  0% {
+    opacity: 0;
+    filter: blur(40px);
+    transform: translateY(100%);
+  }
+
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+/* ── CODE REVEAL (how-it-works) ─────────────────────────────────── */
+@keyframes progress {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+.code-line-reveal {
+  opacity: 0;
+  transform: translateX(-8px);
+  animation: lineReveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes lineReveal {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.code-char-reveal {
+  opacity: 0;
+  filter: blur(8px);
+  animation: charReveal 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes charReveal {
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* ── LINE REVEAL ────────────────────────────────────────────────── */
+.line-reveal {
+  clip-path: inset(0 100% 0 0);
+  animation: line-reveal 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+@keyframes line-reveal {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* ── NOISE OVERLAY (subtle texture) ────────────────────────────── */
+.noise-overlay {
+  position: relative;
+}
+
+.noise-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── PULSE ANIMATION ────────────────────────────────────────────── */
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ── CODE LINE/CHAR REVEAL (how-it-works + developers sections) ─── */
+.code-line-reveal {
+  opacity: 0;
+  transform: translateX(-8px);
+  animation: lineReveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes lineReveal {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.code-char-reveal {
+  opacity: 0;
+  filter: blur(8px);
+  animation: charReveal 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes charReveal {
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.dev-code-line {
+  opacity: 0;
+  transform: translateX(-8px);
+  animation: devLineReveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes devLineReveal {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.dev-code-char {
+  opacity: 0;
+  filter: blur(8px);
+  animation: devCharReveal 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes devCharReveal {
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* ── PROGRESS BAR (how-it-works step indicator) ─────────────────── */
+@keyframes progress {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%;
+  }
+}

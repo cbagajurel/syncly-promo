@@ -1,47 +1,63 @@
-import { AbsoluteFill, interpolate, Sequence, useCurrentFrame } from "remotion";
-import { C, FADE, SCENE } from "./constants";
-import { SceneCTA } from "./scenes/SceneCTA";
-import { SceneFeatures } from "./scenes/SceneFeatures";
-import { SceneHook } from "./scenes/SceneHook";
-import { SceneOutcome } from "./scenes/SceneOutcome";
-import { ScenePain } from "./scenes/ScenePain";
-import { SceneReveal } from "./scenes/SceneReveal";
+import { AbsoluteFill, Audio, interpolate } from "remotion";
+import { TransitionSeries, linearTiming } from "@remotion/transitions";
+import { fade } from "@remotion/transitions/fade";
+import { slide } from "@remotion/transitions/slide";
+import { DUR, MUSIC_URL, STAGE, TOTAL_FRAMES, XFADE } from "./constants";
+import {
+  SceneHook3D,
+  SceneUnify3D,
+  SceneProductTour,
+  SceneOutcome3D,
+  SceneCTA3D,
+} from "./scenes";
 
-// Per-scene fade wrapper
-const FadeWrap = ({
-  dur,
-  children,
-}: {
-  dur: number;
-  children: React.ReactNode;
-}) => {
-  const frame = useCurrentFrame();
-  const opacity = Math.min(
-    interpolate(frame, [0, FADE], [0, 1], { extrapolateRight: "clamp" }),
-    interpolate(frame, [dur - FADE, dur], [1, 0], { extrapolateLeft: "clamp" })
-  );
-  return <AbsoluteFill style={{ opacity }}>{children}</AbsoluteFill>;
-};
+const xfade = linearTiming({ durationInFrames: XFADE });
 
 export const SynclyPromo = () => {
-  const scenes = [
-    { ...SCENE.HOOK,     El: SceneHook     },
-    { ...SCENE.PAIN,     El: ScenePain     },
-    { ...SCENE.REVEAL,   El: SceneReveal   },
-    { ...SCENE.FEATURES, El: SceneFeatures },
-    { ...SCENE.OUTCOME,  El: SceneOutcome  },
-    { ...SCENE.CTA,      El: SceneCTA      },
-  ];
-
   return (
-    <AbsoluteFill style={{ background: C.BG0 }}>
-      {scenes.map(({ from, dur, El }) => (
-        <Sequence key={from} from={from} durationInFrames={dur}>
-          <FadeWrap dur={dur}>
-            <El />
-          </FadeWrap>
-        </Sequence>
-      ))}
+    <AbsoluteFill style={{ background: STAGE.BG }}>
+      {MUSIC_URL && (
+        <Audio
+          src={MUSIC_URL}
+          volume={(f) =>
+            interpolate(
+              f,
+              [0, 20, TOTAL_FRAMES - 30, TOTAL_FRAMES],
+              [0, 0.5, 0.5, 0],
+              { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+            )
+          }
+        />
+      )}
+
+      <TransitionSeries>
+        <TransitionSeries.Sequence durationInFrames={DUR.HOOK}>
+          <SceneHook3D />
+        </TransitionSeries.Sequence>
+        <TransitionSeries.Transition presentation={fade()} timing={xfade} />
+
+        <TransitionSeries.Sequence durationInFrames={DUR.UNIFY}>
+          <SceneUnify3D />
+        </TransitionSeries.Sequence>
+        <TransitionSeries.Transition
+          presentation={slide({ direction: "from-right" })}
+          timing={xfade}
+        />
+
+        <TransitionSeries.Sequence durationInFrames={DUR.TOUR}>
+          <SceneProductTour />
+        </TransitionSeries.Sequence>
+        <TransitionSeries.Transition presentation={fade()} timing={xfade} />
+
+        <TransitionSeries.Sequence durationInFrames={DUR.OUTCOME}>
+          <SceneOutcome3D />
+        </TransitionSeries.Sequence>
+        <TransitionSeries.Transition presentation={fade()} timing={xfade} />
+
+        <TransitionSeries.Sequence durationInFrames={DUR.CTA}>
+          <SceneCTA3D />
+        </TransitionSeries.Sequence>
+      </TransitionSeries>
     </AbsoluteFill>
   );
 };

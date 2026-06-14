@@ -11,7 +11,7 @@ export const DotGrid = ({
   opacity = 0.35,
   spacing = 32,
   dotSize = 1.2,
-  color = C.FG3,
+  color = C.FG2,
 }: DotGridProps) => {
   // Create an SVG pattern for repeating dots
   const patternSize = spacing;

@@ -1,0 +1,69 @@
+@import "tailwindcss";
+@import "./base.css";
+@import "./dashboard.css";
+
+/* Mirrors frontend/src/app/app.css — maps the base.css design tokens onto
+   shadcn/Tailwind utility colours so the copied component markup resolves. */
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-display: var(--font-display);
+  --color-background: var(--bg-0);
+  --color-foreground: var(--fg-0);
+  --color-card: var(--bg-1);
+  --color-card-foreground: var(--fg-0);
+  --color-popover: var(--bg-1);
+  --color-popover-foreground: var(--fg-0);
+  --color-primary: var(--fg-0);
+  --color-primary-foreground: var(--bg-1);
+  --color-secondary: var(--bg-2);
+  --color-secondary-foreground: var(--fg-0);
+  --color-muted: var(--bg-2);
+  --color-muted-foreground: var(--fg-2);
+  --color-accent: var(--bg-2);
+  --color-accent-foreground: var(--fg-0);
+  --color-destructive: var(--err);
+  --color-destructive-foreground: var(--err);
+  --color-border: var(--border-0);
+  --color-input: var(--bg-2);
+  --color-ring: var(--fg-0);
+
+  --color-brand: var(--accent);
+  --color-brand-foreground: var(--accent-fg);
+  --color-brand-soft: var(--accent-soft);
+  --color-success: var(--ok);
+  --color-warning: var(--warn);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar-bg);
+
+  --color-ig: var(--p-instagram);
+  --color-fb: var(--p-facebook);
+  --color-wa: var(--p-whatsapp);
+  --color-msgr: var(--p-messenger);
+  --color-tiktok: var(--p-tiktok);
+  --color-li: var(--p-linkedin);
+
+  --color-pastel-mint: var(--pastel-mint);
+  --color-pastel-mint-ink: var(--pastel-mint-ink);
+  --color-pastel-lavender: var(--pastel-lavender);
+  --color-pastel-lavender-ink: var(--pastel-lavender-ink);
+  --color-pastel-peach: var(--pastel-peach);
+  --color-pastel-peach-ink: var(--pastel-peach-ink);
+  --color-pastel-sky: var(--pastel-sky);
+  --color-pastel-sky-ink: var(--pastel-sky-ink);
+  --color-pastel-blush: var(--pastel-blush);
+  --color-pastel-blush-ink: var(--pastel-blush-ink);
+}
+
+/* Remotion renders at a fixed 1920×1080 frame — let content fill it. */
+html,
+body,
+#root {
+  height: 100%;
+}

@@ -1,3 +1,4 @@
+import "./styles/index.css";
 import { Composition } from "remotion";
 import { SynclyPromo } from "./Composition";
 import { FPS, TOTAL_FRAMES } from "./constants";
