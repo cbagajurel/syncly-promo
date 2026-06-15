@@ -1,46 +1,58 @@
 import { staticFile } from "remotion";
-import { loadFont as loadSans } from "@remotion/google-fonts/InstrumentSans";
-import { loadFont as loadSerif } from "@remotion/google-fonts/InstrumentSerif";
-import { loadFont as loadMono } from "@remotion/google-fonts/JetBrainsMono";
+import { loadFont as loadGeist } from "@remotion/google-fonts/Geist";
+import { loadFont as loadGeistMono } from "@remotion/google-fonts/GeistMono";
+import { loadFont as loadInter } from "@remotion/google-fonts/Inter";
 
-const { fontFamily: _sans } = loadSans("normal", {
+// Geist for display + body (the SF-Pro-adjacent, Vercel/Linear look),
+// GeistMono for eyebrows / labels / timestamps, Inter as a fallback face.
+const { fontFamily: _geist } = loadGeist("normal", {
   subsets: ["latin"],
   weights: ["400", "500", "600", "700"],
 });
-const { fontFamily: _serif } = loadSerif("normal", {
-  subsets: ["latin"],
-  weights: ["400"],
-});
-const { fontFamily: _mono } = loadMono("normal", {
+const { fontFamily: _geistMono } = loadGeistMono("normal", {
   subsets: ["latin"],
   weights: ["400", "500"],
 });
+const { fontFamily: _inter } = loadInter("normal", {
+  subsets: ["latin"],
+  weights: ["400", "500", "600"],
+});
 
-export const FONT = _sans;
-export const DISPLAY = _serif;
-export const MONO = _mono;
+// Headlines + body share the Geist stack; Inter as graceful fallback.
+export const FONT = `${_geist}, ${_inter}, system-ui, sans-serif`;
+export const DISPLAY = `${_geist}, ${_inter}, system-ui, sans-serif`;
+export const MONO = `${_geistMono}, ui-monospace, monospace`;
 
 // ── Palette ───────────────────────────────────────────────────────────
-// Light UI tokens (panels) + the dark cinematic 3D stage.
+// Cinematic studio neutrals. Emerald is demoted to a small accent only —
+// never a scene-wide glow.
 export const C = {
-  BG0: "#FCFCFB",
-  FG0: "#1C1A17",
-  FG2: "#6F6A62",
-  BORDER: "#E4E1DA",
-  ACCENT: "oklch(0.6 0.16 145)",
-  ACCENT_FG: "#FFFFFF",
-  INSTAGRAM: "oklch(0.62 0.13 20)",
-  FACEBOOK: "oklch(0.55 0.13 255)",
-  WHATSAPP: "oklch(0.62 0.13 150)",
+  // Light scenes (problem / solution backdrops)
+  PAPER: "#FAFAF9",
+  PAPER_FG: "#1C1A17",
+  PAPER_FG2: "#6F6A62",
+  PAPER_BORDER: "#E7E4DD",
+  // Dark cinematic scenes
+  INK: "#0A0A0B",
+  INK_2: "#121214",
+  WHITE: "#F4F5F4",
+  MUTED: "rgba(244,245,244,0.58)",
+  FAINT: "rgba(244,245,244,0.40)",
+  HAIRLINE: "rgba(244,245,244,0.10)",
+  // Accent — used sparingly (underline, active dot, CTA, key numbers)
+  ACCENT: "#34d399",
+  ACCENT_DEEP: "#0e9f6e",
 } as const;
 
-// 3D stage colours (literals — WebGL can't read CSS vars).
+// 3D stage colours (literals — WebGL can't read CSS vars). Neutral studio.
 export const STAGE = {
-  BG: "#080a0f",
-  FOG: "#080a0f",
-  EMERALD: "#34d399",
-  EMERALD_DEEP: "#0e9f6e",
-  GLASS: "#cfe8df",
+  BG: "#0A0A0B",
+  FLOOR: "#0E0E10",
+  ALU: "#c5c9cf", // brushed aluminium body (lit by key/rim, low metalness)
+  ALU_DARK: "#9aa0a8",
+  KEY: "#fff6ea", // warm-neutral key light
+  RIM: "#cfd6e6", // cool rim
+  ACCENT: "#34d399",
   PLATFORM: {
     instagram: "#e1568a",
     facebook: "#4a7cf0",
@@ -49,8 +61,7 @@ export const STAGE = {
   },
 } as const;
 
-// Royalty-free track served from public/ (avoids Studio CORS on remote audio).
-// Swap public/music.mp3 to change it. Source: SoundHelix (free to use).
+// Royalty-free track served from public/.
 export const MUSIC_URL = staticFile("music.mp3");
 
 // ── Timing ────────────────────────────────────────────────────────────
@@ -61,34 +72,35 @@ const S = (sec: number) => Math.round(FPS * sec);
 export const EASE = {
   OUT: [0.16, 1, 0.3, 1] as const, // crisp decel entrance
   INOUT: [0.45, 0, 0.55, 1] as const, // editorial
-  POP: [0.34, 1.56, 0.64, 1] as const, // playful overshoot
+  POP: [0.34, 1.56, 0.64, 1] as const, // playful overshoot (incidental only)
   IN: [0.5, 0, 0.75, 0] as const, // accelerate-away exit
 } as const;
 
-// Internal beats of the product tour (sum === DUR.TOUR).
-export const TOUR = {
-  overview: S(2),
-  inbox: S(5),
-  compose: S(4.5),
-  schedule: S(3),
-  analytics: S(4),
-  posts: S(2),
-  settings: S(2),
+// Internal beats of the Features scene (sum === DUR.FEATURES).
+export const FEAT = {
+  inbox: S(3.6),
+  compose: S(3.2),
+  schedule: S(3.0),
+  analytics: S(3.4),
+  knowledge: S(2.8),
 } as const;
 
-const TOUR_TOTAL = Object.values(TOUR).reduce((a, b) => a + b, 0);
+const FEAT_TOTAL = Object.values(FEAT).reduce((a, b) => a + b, 0);
 
 export const DUR = {
-  HOOK: S(4.5),
-  UNIFY: S(4),
-  TOUR: TOUR_TOTAL,
-  OUTCOME: S(3.5),
-  CTA: S(4.5),
+  HOOK: S(4.0),
+  PROBLEM: S(4.0),
+  SOLUTION: S(4.5),
+  FEATURES: FEAT_TOTAL,
+  SHOWCASE: S(4.5),
+  ECOSYSTEM: S(4.0),
+  TRUST: S(3.5),
+  CTA: S(3.5),
 } as const;
 
 // Cross-fade length between scenes (frames). TransitionSeries overlaps these.
-export const XFADE = 10;
-const N_TRANSITIONS = 4;
+export const XFADE = 8;
+const N_TRANSITIONS = 7;
 
 export const TOTAL_FRAMES =
   Object.values(DUR).reduce((a, b) => a + b, 0) - N_TRANSITIONS * XFADE;

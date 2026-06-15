@@ -5,6 +5,7 @@
   "scripts": {
     "studio": "remotion studio",
     "render": "remotion render SynclyPromo out/syncly-promo.mp4 --codec=h264",
+    "render:4k": "remotion render SynclyPromo out/syncly-promo-4k.mp4 --codec=h264 --scale=2 --crf=18",
     "still": "remotion still SynclyPromo --frame=0 out/still.png"
   },
   "dependencies": {

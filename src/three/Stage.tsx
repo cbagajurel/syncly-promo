@@ -5,14 +5,14 @@ import { STAGE } from "../constants";
 import { CameraRig, type CamKey } from "./CameraRig";
 
 /**
- * The shared 3D stage: a deep cinematic backdrop with emerald key light.
- * `children` are 3D nodes; a sibling HTML overlay is rendered by each scene
- * on top of this canvas, both locked to the same frame.
+ * Neutral studio stage for the 3D product showcase. No neon point lights, no
+ * fog — a soft warm key with shadows, a cool rim, and gentle ambient fill.
+ * Think a real product photo set, not a sci-fi backdrop.
  */
 export function Stage({
   children,
   camPath,
-  fov = 42,
+  fov = 38,
 }: {
   children?: ReactNode;
   camPath?: CamKey[];
@@ -23,29 +23,38 @@ export function Stage({
     <ThreeCanvas
       width={width}
       height={height}
-      camera={{ position: [0, 0, 7], fov }}
+      shadows
+      camera={{ position: [0, 1.2, 7], fov }}
       style={{ position: "absolute", inset: 0 }}
       gl={{ antialias: true }}
     >
       <color attach="background" args={[STAGE.BG]} />
-      <fog attach="fog" args={[STAGE.FOG, 10, 30]} />
 
-      <ambientLight intensity={0.9} />
-      <directionalLight position={[6, 9, 7]} intensity={2.4} />
-      <pointLight
-        position={[-7, -2, 5]}
-        intensity={55}
-        color={STAGE.EMERALD}
-        distance={30}
-        decay={2}
+      {/* ambient fill */}
+      <ambientLight intensity={0.55} />
+
+      {/* warm key light (casts the soft shadow) */}
+      <directionalLight
+        position={[4, 8, 6]}
+        intensity={2.6}
+        color={STAGE.KEY}
+        castShadow
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+        shadow-camera-near={1}
+        shadow-camera-far={30}
+        shadow-camera-left={-8}
+        shadow-camera-right={8}
+        shadow-camera-top={8}
+        shadow-camera-bottom={-8}
+        shadow-bias={-0.0004}
       />
-      <pointLight
-        position={[7, 5, -3]}
-        intensity={40}
-        color="#3a6ad6"
-        distance={30}
-        decay={2}
-      />
+
+      {/* cool rim from behind for edge separation */}
+      <directionalLight position={[-6, 4, -5]} intensity={1.1} color={STAGE.RIM} />
+
+      {/* low fill to lift shadow underside */}
+      <pointLight position={[0, -3, 4]} intensity={6} color="#ffffff" distance={20} decay={2} />
 
       {camPath && <CameraRig path={camPath} />}
       {children}

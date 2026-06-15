@@ -14,7 +14,7 @@ import {
   IconSmile,
   IconSend,
 } from "../shared/icons";
-import { Reveal, useTyped } from "../anim";
+import { Reveal } from "../anim";
 import {
   CONVERSATIONS,
   AI_REPLY,
@@ -41,11 +41,19 @@ function convTime(iso: string) {
 
 function AiBadge({ status }: { status: DConversation["aiStatus"] }) {
   if (status === "AI_ACTIVE")
-    return <span style={{ fontSize: 11, color: "var(--accent)", lineHeight: 1 }}>🤖</span>;
+    return (
+      <span style={{ fontSize: 11, color: "var(--accent)", lineHeight: 1 }}>
+        🤖
+      </span>
+    );
   if (status === "AI_UNRESOLVED")
     return <span style={{ fontSize: 11, lineHeight: 1 }}>⚠️</span>;
   if (status === "HUMAN_TAKEOVER")
-    return <span style={{ fontSize: 11, color: "var(--fg-3)", lineHeight: 1 }}>👤</span>;
+    return (
+      <span style={{ fontSize: 11, color: "var(--fg-3)", lineHeight: 1 }}>
+        👤
+      </span>
+    );
   return null;
 }
 
@@ -102,7 +110,6 @@ export function DashInbox() {
   const replyStart = typingEnd;
   const showTyping = frame >= typingStart && frame < typingEnd;
   const showReply = frame >= replyStart;
-  const typedReply = useTyped(AI_REPLY, replyStart + 2, 24);
 
   return (
     <div className="dash-inbox">
@@ -110,7 +117,10 @@ export function DashInbox() {
       <aside className="inbox-nav">
         <div className="inbox-nav-head">
           <span className="inbox-nav-title">Team Inbox</span>
-          <button className="btn btn-ghost btn-sm" style={{ padding: "2px 4px" }}>
+          <button
+            className="btn btn-ghost btn-sm"
+            style={{ padding: "2px 4px" }}
+          >
             <IconSettings size={14} />
           </button>
         </div>
@@ -119,7 +129,16 @@ export function DashInbox() {
           <div className="inbox-nav-section-label">Channels</div>
           <div className="inbox-nav-item active">
             <span className="inbox-nav-item-icon">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <rect x="2" y="3" width="20" height="14" rx="2" />
                 <path d="M8 21h8M12 17v4" />
               </svg>
@@ -127,27 +146,54 @@ export function DashInbox() {
             <span className="inbox-nav-item-label">All Channels</span>
           </div>
           <div className="inbox-nav-item">
-            <span className="inbox-nav-item-icon" style={{ color: "var(--p-instagram)" }}>
+            <span
+              className="inbox-nav-item-icon"
+              style={{ color: "var(--p-instagram)" }}
+            >
               <IconIG size={14} />
             </span>
             <span className="inbox-nav-item-label">Instagram</span>
-            <span className="inbox-nav-item-badge" style={{ background: "color-mix(in srgb, var(--p-instagram) 12%, transparent)", color: "var(--p-instagram)" }}>
+            <span
+              className="inbox-nav-item-badge"
+              style={{
+                background:
+                  "color-mix(in srgb, var(--p-instagram) 12%, transparent)",
+                color: "var(--p-instagram)",
+              }}
+            >
               1
             </span>
           </div>
           <div className="inbox-nav-item">
-            <span className="inbox-nav-item-icon" style={{ color: "var(--p-whatsapp)" }}>
+            <span
+              className="inbox-nav-item-icon"
+              style={{ color: "var(--p-whatsapp)" }}
+            >
               <IconWA size={14} />
             </span>
             <span className="inbox-nav-item-label">WhatsApp</span>
-            <span style={{ fontSize: 9, color: "var(--fg-3)", marginLeft: "auto" }}>›</span>
+            <span
+              style={{ fontSize: 9, color: "var(--fg-3)", marginLeft: "auto" }}
+            >
+              ›
+            </span>
           </div>
           <div className="inbox-nav-item">
-            <span className="inbox-nav-item-icon" style={{ color: "var(--p-facebook)" }}>
+            <span
+              className="inbox-nav-item-icon"
+              style={{ color: "var(--p-facebook)" }}
+            >
               <IconFB size={14} />
             </span>
             <span className="inbox-nav-item-label">Messenger</span>
-            <span className="inbox-nav-item-badge" style={{ background: "color-mix(in srgb, var(--p-facebook) 12%, transparent)", color: "var(--p-facebook)" }}>
+            <span
+              className="inbox-nav-item-badge"
+              style={{
+                background:
+                  "color-mix(in srgb, var(--p-facebook) 12%, transparent)",
+                color: "var(--p-facebook)",
+              }}
+            >
               1
             </span>
           </div>
@@ -172,7 +218,14 @@ export function DashInbox() {
       {/* ── Body: conversation list + thread ── */}
       <div className="inbox-body">
         {/* Conversation list */}
-        <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            flex: 1,
+            minHeight: 0,
+          }}
+        >
           <div
             style={{
               display: "flex",
@@ -185,7 +238,11 @@ export function DashInbox() {
           >
             <div className="inbox-list-search" style={{ flex: 1 }}>
               <IconSearch size={13} />
-              <input className="inbox-list-input" placeholder="Search conversations" readOnly />
+              <input
+                className="inbox-list-input"
+                placeholder="Search conversations"
+                readOnly
+              />
             </div>
             <button className="btn btn-ghost btn-sm">
               <IconFilter size={13} />
@@ -199,30 +256,75 @@ export function DashInbox() {
             {CONVERSATIONS.map((c, i) => {
               const last = c.messages[c.messages.length - 1];
               return (
-                <Reveal key={c.id} delay={2 + i * 4} x={-12} y={0} spring="SNAPPY">
-                  <div className="inbox-row-wrap" style={{ display: "flex", alignItems: "stretch" }}>
-                    <button className={"inbox-row" + (i === 0 ? " active" : "")} style={{ flex: 1 }}>
+                <Reveal
+                  key={c.id}
+                  delay={2 + i * 4}
+                  x={-12}
+                  y={0}
+                  spring="SNAPPY"
+                >
+                  <div
+                    className="inbox-row-wrap"
+                    style={{ display: "flex", alignItems: "stretch" }}
+                  >
+                    <button
+                      className={"inbox-row" + (i === 0 ? " active" : "")}
+                      style={{ flex: 1 }}
+                    >
                       <div className="inbox-row-avatar-wrap">
                         <div className="inbox-row-avatar">
-                          <span className="inbox-row-avatar-fallback" style={{ display: "grid" }}>
-                            {(c.participantName ?? "?").slice(0, 2).toUpperCase()}
+                          <span
+                            className="inbox-row-avatar-fallback"
+                            style={{ display: "grid" }}
+                          >
+                            {(c.participantName ?? "?")
+                              .slice(0, 2)
+                              .toUpperCase()}
                           </span>
                         </div>
-                        <span className="inbox-row-platform" style={{ background: IG_COLOR }} />
+                        <span
+                          className="inbox-row-platform"
+                          style={{ background: IG_COLOR }}
+                        />
                       </div>
                       <div className="inbox-row-body">
                         <div className="inbox-row-top">
                           <div className="inbox-row-name-block">
-                            <span className="inbox-row-name">{c.participantName}</span>
-                            <span className="inbox-row-handle">@{c.participantUsername}</span>
+                            <span className="inbox-row-name">
+                              {c.participantName}
+                            </span>
+                            <span className="inbox-row-handle">
+                              @{c.participantUsername}
+                            </span>
                           </div>
-                          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 4,
+                            }}
+                          >
                             <AiBadge status={c.aiStatus} />
-                            <span className="mono inbox-row-time">{convTime(c.lastMessageAt)}</span>
+                            <span className="mono inbox-row-time">
+                              {convTime(c.lastMessageAt)}
+                            </span>
                           </div>
                         </div>
-                        <div className="inbox-row-prev" style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                          <span className="inbox-row-prev-text" style={{ flex: 1, fontWeight: c.unread > 0 ? 600 : 400 }}>
+                        <div
+                          className="inbox-row-prev"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 6,
+                          }}
+                        >
+                          <span
+                            className="inbox-row-prev-text"
+                            style={{
+                              flex: 1,
+                              fontWeight: c.unread > 0 ? 600 : 400,
+                            }}
+                          >
                             {last.text}
                           </span>
                           {c.unread > 0 && (
@@ -252,16 +354,31 @@ export function DashInbox() {
         </div>
 
         {/* Thread */}
-        <section className="inbox-thread" style={{ borderRadius: 0, border: "none", background: "transparent", display: "flex", flexDirection: "column", minHeight: 0 }}>
+        <section
+          className="inbox-thread"
+          style={{
+            borderRadius: 0,
+            border: "none",
+            background: "transparent",
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 0,
+          }}
+        >
           <header className="inbox-thread-head">
             <div className="inbox-thread-id">
               <div className="inbox-thread-avatar">
-                <span className="lp-preview-avatar lg inbox-thread-avatar-fallback" style={{ display: "grid" }}>
+                <span
+                  className="lp-preview-avatar lg inbox-thread-avatar-fallback"
+                  style={{ display: "grid" }}
+                >
                   {avatar}
                 </span>
               </div>
               <div>
-                <div className="inbox-thread-name">{active.participantName}</div>
+                <div className="inbox-thread-name">
+                  {active.participantName}
+                </div>
                 <div className="inbox-thread-meta">
                   <span className="pdot" style={{ background: IG_COLOR }} />
                   <span>Instagram</span>
@@ -273,9 +390,15 @@ export function DashInbox() {
               </div>
             </div>
             <div className="inbox-thread-actions">
-              <button className="btn btn-ghost btn-sm"><IconStar size={14} /></button>
-              <button className="btn btn-ghost btn-sm"><IconArchive size={14} /></button>
-              <button className="btn btn-sm"><IconUsers size={12} /> Assign</button>
+              <button className="btn btn-ghost btn-sm">
+                <IconStar size={14} />
+              </button>
+              <button className="btn btn-ghost btn-sm">
+                <IconArchive size={14} />
+              </button>
+              <button className="btn btn-sm">
+                <IconUsers size={12} /> Assign
+              </button>
               <button className="btn btn-sm btn-accent">🤖 AI active</button>
               <button className="btn btn-sm">Resolve</button>
             </div>
@@ -288,24 +411,48 @@ export function DashInbox() {
                 <span>Today</span>
               </div>
               {active.messages.map((m, i) => (
-                <Bubble key={m.id} m={m} delay={baseDelays[i]} avatar={avatar} />
+                <Bubble
+                  key={m.id}
+                  m={m}
+                  delay={baseDelays[i]}
+                  avatar={avatar}
+                />
               ))}
 
               {showTyping && (
                 <div className="inbox-msg them" style={{ padding: "6px 14px" }}>
-                  <div className="inbox-msgs-loading" style={{ padding: 0, gap: 4 }}>
-                    <span className="inbox-msgs-loading-dot" style={{ width: 6, height: 6 }} />
-                    <span className="inbox-msgs-loading-dot" style={{ width: 6, height: 6, animationDelay: "0.15s" }} />
-                    <span className="inbox-msgs-loading-dot" style={{ width: 6, height: 6, animationDelay: "0.3s" }} />
+                  <div
+                    className="inbox-msgs-loading"
+                    style={{ padding: 0, gap: 4 }}
+                  >
+                    <span
+                      className="inbox-msgs-loading-dot"
+                      style={{ width: 6, height: 6 }}
+                    />
+                    <span
+                      className="inbox-msgs-loading-dot"
+                      style={{ width: 6, height: 6, animationDelay: "0.15s" }}
+                    />
+                    <span
+                      className="inbox-msgs-loading-dot"
+                      style={{ width: 6, height: 6, animationDelay: "0.3s" }}
+                    />
                   </div>
-                  <span className="mono" style={{ fontSize: 11, color: "var(--fg-3)", marginLeft: 6 }}>
+                  <span
+                    className="mono"
+                    style={{
+                      fontSize: 11,
+                      color: "var(--fg-3)",
+                      marginLeft: 6,
+                    }}
+                  >
                     AI is typing…
                   </span>
                 </div>
               )}
 
               {showReply && (
-                <div className="inbox-msg me">
+                <Reveal delay={replyStart} y={8} spring="SNAPPY" className="inbox-msg me">
                   <div
                     style={{
                       display: "flex",
@@ -315,19 +462,15 @@ export function DashInbox() {
                       maxWidth: "62%",
                     }}
                   >
-                    <div className="inbox-msg-bubble" style={{ maxWidth: "100%" }}>
-                      <div className="inbox-msg-text">
-                        {typedReply}
-                        {typedReply.length < AI_REPLY.length && (
-                          <span style={{ opacity: 0.5 }}>▍</span>
-                        )}
-                      </div>
-                      <div className="inbox-msg-time mono">
-                        {typedReply.length >= AI_REPLY.length ? "now · 🤖 AI" : "…"}
-                      </div>
+                    <div
+                      className="inbox-msg-bubble"
+                      style={{ maxWidth: "100%" }}
+                    >
+                      <div className="inbox-msg-text">{AI_REPLY}</div>
+                      <div className="inbox-msg-time mono">now · 🤖 AI</div>
                     </div>
                   </div>
-                </div>
+                </Reveal>
               )}
             </div>
           </div>
@@ -336,9 +479,12 @@ export function DashInbox() {
             <div className="inbox-input-meta">
               <span>Replying as</span>
               <span className="chip">
-                <span className="pdot" style={{ background: IG_COLOR }} /> @atlasstudio
+                <span className="pdot" style={{ background: IG_COLOR }} />{" "}
+                @atlasstudio
               </span>
-              <span className="mono inbox-input-meta-tail">Shift + Enter for newline</span>
+              <span className="mono inbox-input-meta-tail">
+                Shift + Enter for newline
+              </span>
             </div>
             <div className="inbox-input-field">
               <textarea
@@ -349,9 +495,15 @@ export function DashInbox() {
               />
               <div className="inbox-input-tools">
                 <div className="inbox-input-tools-left">
-                  <button className="btn btn-ghost btn-sm"><IconImage size={14} /></button>
-                  <button className="btn btn-ghost btn-sm"><IconPaperclip size={14} /></button>
-                  <button className="btn btn-ghost btn-sm"><IconSmile size={14} /></button>
+                  <button className="btn btn-ghost btn-sm">
+                    <IconImage size={14} />
+                  </button>
+                  <button className="btn btn-ghost btn-sm">
+                    <IconPaperclip size={14} />
+                  </button>
+                  <button className="btn btn-ghost btn-sm">
+                    <IconSmile size={14} />
+                  </button>
                 </div>
                 <button className="btn btn-accent btn-sm">
                   <IconSend size={12} /> Send
