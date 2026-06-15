@@ -6,7 +6,10 @@
     "studio": "remotion studio",
     "render": "remotion render SynclyPromo out/syncly-promo.mp4 --codec=h264",
     "render:4k": "remotion render SynclyPromo out/syncly-promo-4k.mp4 --codec=h264 --scale=2 --crf=18",
-    "still": "remotion still SynclyPromo --frame=0 out/still.png"
+    "still": "remotion still SynclyPromo --frame=0 out/still.png",
+    "render:film": "remotion render SynclyFilm out/syncly-film.mp4 --codec=h264",
+    "render:film:4k": "remotion render SynclyFilm out/syncly-film-4k.mp4 --codec=h264 --scale=2 --crf=18",
+    "stills:screens": "remotion still Screen-overview public/screens/overview.png && remotion still Screen-inbox public/screens/inbox.png && remotion still Screen-compose public/screens/compose.png && remotion still Screen-analytics public/screens/analytics.png"
   },
   "dependencies": {
     "@react-three/fiber": "^8",
