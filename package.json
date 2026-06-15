@@ -9,6 +9,9 @@
     "still": "remotion still SynclyPromo --frame=0 out/still.png",
     "render:film": "remotion render SynclyFilm out/syncly-film.mp4 --codec=h264",
     "render:film:4k": "remotion render SynclyFilm out/syncly-film-4k.mp4 --codec=h264 --scale=2 --crf=18",
+    "stills:ad": "remotion still AdScreen-overview public/screens/overview-ad.png --frame=90",
+    "render:ad": "remotion render SynclyAd out/syncly-ad.mp4 --codec=h264",
+    "render:ad:4k": "remotion render SynclyAd out/syncly-ad-4k.mp4 --codec=h264 --scale=2 --crf=18",
     "stills:screens": "remotion still Screen-overview public/screens/overview.png && remotion still Screen-inbox public/screens/inbox.png && remotion still Screen-compose public/screens/compose.png && remotion still Screen-analytics public/screens/analytics.png"
   },
   "dependencies": {

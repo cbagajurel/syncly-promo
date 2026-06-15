@@ -11,24 +11,14 @@ export type MacBookProps = {
   screenOn?: number;
 };
 
-/* ── This project's photoreal model ──────────────────────────────────────
-   MacBook Pro M3 16" by jackbaeten (Sketchfab, CC-BY-4.0). Obfuscated names,
-   so the anchors below were resolved by inspecting the glTF: the lid subtree,
-   the hinge line, and the emissive display material we re-skin with live UI.  */
 const MODEL = staticFile("models/macbook_pro_m3_16_inch_2024.glb");
-const LID_NODE = "VCQqxpxkUlzqcJI_62"; // lid/display subtree root
-const SCREEN_MAT = "sfCQkHOWyrsLmor"; // emissive display material (#36)
-const HINGE = new THREE.Vector3(0, 0.36, -11.82); // model-space hinge axis point
-
-const TARGET_W = 5.0; // world width to scale the model to
-const BASE_Y = -0.62; // sit the base just below origin (matches camera framing)
-// hinge travel: open (lidOpen=1) → 0; closed (lidOpen=0) → CLOSED radians.
-// Positive X folds the lid forward over the keyboard (screen face down).
+const LID_NODE = "VCQqxpxkUlzqcJI_62";
+const SCREEN_MAT = "sfCQkHOWyrsLmor";
+const HINGE = new THREE.Vector3(0, 0.36, -11.82);
+const TARGET_W = 5.0;
+const BASE_Y = -0.62;
 const CLOSED = 1.95;
 
-/* Module-cached loader. MUST be called from the Remotion React tree (an act /
-   Hero component), NOT inside <ThreeCanvas> — delayRender + setState only flush
-   to the captured frame outside the R3F reconciler. */
 let cached: THREE.Group | null = null;
 let loadPromise: Promise<void> | null = null;
 function loadOnce(): Promise<void> {
@@ -41,7 +31,7 @@ function loadOnce(): Promise<void> {
           resolve();
         },
         undefined,
-        () => resolve(), // missing/failed → procedural fallback
+        () => resolve(),
       );
     });
   }
@@ -66,7 +56,6 @@ export function useMacBookScene(): THREE.Group | null {
   return cached;
 }
 
-/* Soft round contact shadow (radial gradient) for gentle grounding. */
 function useContactShadow(): THREE.CanvasTexture {
   return useMemo(() => {
     const S = 512;
@@ -92,8 +81,6 @@ function MacBookGLB({
 }: { scene: THREE.Group } & MacBookProps) {
   const contact = useContactShadow();
 
-  // Prepare once: shadows, locate the screen meshes, set up a hinge pivot, and
-  // compute the fit transform (scale + recenter).
   const { root, pivot, fit, screenMeshes } = useMemo(() => {
     const root = scene.clone(true);
     const screenMeshes: THREE.Mesh[] = [];
@@ -103,8 +90,9 @@ function MacBookGLB({
       m.castShadow = true;
       m.receiveShadow = true;
       const mats = Array.isArray(m.material) ? m.material : [m.material];
-      if (mats.some((mat) => mat && (mat as THREE.Material).name === SCREEN_MAT)) {
-        // give the screen its own material instance so we can mutate per clone
+      if (
+        mats.some((mat) => mat && (mat as THREE.Material).name === SCREEN_MAT)
+      ) {
         m.material = (m.material as THREE.MeshStandardMaterial).clone();
         screenMeshes.push(m);
       }
@@ -118,8 +106,6 @@ function MacBookGLB({
     box.getCenter(center);
     const s = TARGET_W / size.x;
 
-    // Hinge pivot. Ancestor nodes carry axis-conversion matrices, so HINGE
-    // (world space) must be converted into the lid parent's local space.
     const lid = root.getObjectByName(LID_NODE);
     let pivot: THREE.Group | null = null;
     if (lid && lid.parent) {
@@ -128,7 +114,7 @@ function MacBookGLB({
       pivot.name = "lidPivot";
       pivot.position.copy(parent.worldToLocal(HINGE.clone()));
       parent.add(pivot);
-      pivot.attach(lid); // preserves the lid's world transform
+      pivot.attach(lid);
     }
 
     return {
@@ -139,8 +125,6 @@ function MacBookGLB({
     };
   }, [scene]);
 
-  // Re-skin the display with the live Syncly UI (orientation is baked into the
-  // texture in useScreenTexture, so just assign + drive the glow).
   screenMeshes.forEach((m) => {
     const mat = m.material as THREE.MeshStandardMaterial;
     mat.map = screen;
