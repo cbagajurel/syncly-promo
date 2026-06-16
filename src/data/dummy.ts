@@ -33,10 +33,20 @@ export const USER = { name: "Mara Costa", email: "mara@atlasstudio.co" };
 export const WORKSPACE = { name: "Atlas Studio", plan: "Free" as const };
 
 export const INSTAGRAM_ACCOUNTS = [
-  { id: "ig1", username: "atlasstudio", profilePictureUrl: null, isActive: true },
+  {
+    id: "ig1",
+    username: "atlasstudio",
+    profilePictureUrl: null,
+    isActive: true,
+  },
 ];
 export const FACEBOOK_PAGES = [
-  { id: "fb1", pageName: "Atlas Studio", profilePictureUrl: null, isActive: true },
+  {
+    id: "fb1",
+    pageName: "Atlas Studio",
+    profilePictureUrl: null,
+    isActive: true,
+  },
 ];
 
 export const TOTAL_UNREAD = 26;
@@ -165,11 +175,7 @@ export const POSTS: DPost[] = [
 ];
 
 // ── Inbox ────────────────────────────────────────────────────────────────────
-export type AiStatus =
-  | "AI_ACTIVE"
-  | "AI_UNRESOLVED"
-  | "HUMAN_TAKEOVER"
-  | null;
+export type AiStatus = "AI_ACTIVE" | "AI_UNRESOLVED" | "HUMAN_TAKEOVER" | null;
 export type Direction = "INBOUND" | "OUTBOUND";
 export type MsgType =
   | "TEXT"
@@ -378,10 +384,38 @@ export interface KbEntry {
 }
 
 export const KB_ENTRIES: KbEntry[] = [
-  { id: "k1", label: "Shipping & returns policy.pdf", type: "file", chunks: 14, status: "Ready", createdAt: iso(5 * DAY) },
-  { id: "k2", label: "Product care & materials", type: "text", chunks: 8, status: "Ready", createdAt: iso(5 * DAY) },
-  { id: "k3", label: "FAQ — sizing and fit", type: "text", chunks: 11, status: "Ready", createdAt: iso(4 * DAY) },
-  { id: "k4", label: "Wholesale & press kit.pdf", type: "file", chunks: 6, status: "Processing", createdAt: iso(20 * MIN) },
+  {
+    id: "k1",
+    label: "Shipping & returns policy.pdf",
+    type: "file",
+    chunks: 14,
+    status: "Ready",
+    createdAt: iso(5 * DAY),
+  },
+  {
+    id: "k2",
+    label: "Product care & materials",
+    type: "text",
+    chunks: 8,
+    status: "Ready",
+    createdAt: iso(5 * DAY),
+  },
+  {
+    id: "k3",
+    label: "FAQ — sizing and fit",
+    type: "text",
+    chunks: 11,
+    status: "Ready",
+    createdAt: iso(4 * DAY),
+  },
+  {
+    id: "k4",
+    label: "Wholesale & press kit.pdf",
+    type: "file",
+    chunks: 6,
+    status: "Processing",
+    createdAt: iso(20 * MIN),
+  },
 ];
 
 export interface LearnedQa {

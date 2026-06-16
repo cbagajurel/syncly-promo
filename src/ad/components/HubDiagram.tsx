@@ -27,6 +27,8 @@ export function HubDiagram({
   radius = 300,
   scale = 1,
   opacity = 1,
+  hero = false,
+  labels,
 }: {
   delay?: number;
   accent?: string;
@@ -35,10 +37,15 @@ export function HubDiagram({
   radius?: number;
   scale?: number;
   opacity?: number;
+  hero?: boolean;
+  labels?: string[];
 }) {
   const frame = useCurrentFrame();
   const draw = useEnter(delay + 8, 44);
   const hub = useEnter(delay, 22);
+  // hero finale: connectors complete, then one expanding "synced" ring + a pop
+  const synced = useEnter(delay + 52, 26);
+  const pop = hero ? Math.sin(Math.min(synced, 1) * Math.PI) * 0.06 : 0;
 
   return (
     <AbsoluteFill style={{ opacity, transform: `scale(${scale})`, transformOrigin: `${cx}px ${cy}px` }}>
@@ -102,6 +109,28 @@ export function HubDiagram({
             }}
           >
             <Img src={staticFile(n.icon)} style={{ width: size * 0.54, height: size * 0.54, objectFit: "contain" }} />
+            {labels?.[i] && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: size + 8,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  whiteSpace: "nowrap",
+                  fontFamily: F.mono,
+                  fontSize: 15,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: C.INK_3,
+                  opacity: interpolate(frame, [delay + 26 + i * 5, delay + 40 + i * 5], [0, 1], {
+                    extrapolateLeft: "clamp",
+                    extrapolateRight: "clamp",
+                  }),
+                }}
+              >
+                {labels[i]}
+              </span>
+            )}
           </div>
         );
       })}
@@ -121,7 +150,7 @@ export function HubDiagram({
           alignItems: "center",
           justifyContent: "center",
           opacity: hub,
-          transform: `scale(${0.84 + 0.16 * hub})`,
+          transform: `scale(${0.84 + 0.16 * hub + pop})`,
         }}
       >
         <Img src={LOGO} style={{ width: 96, height: 96, borderRadius: 22 }} />
@@ -131,7 +160,7 @@ export function HubDiagram({
             inset: -10,
             borderRadius: 52,
             border: `1.5px solid ${accent}`,
-            opacity: 0.15 + 0.2 * pulse(frame, 48),
+            opacity: (hero ? 0.22 : 0.15) + 0.2 * pulse(frame, 48),
           }}
         />
         <span
@@ -140,9 +169,32 @@ export function HubDiagram({
             inset: -28,
             borderRadius: 70,
             border: `1px solid ${accent}`,
-            opacity: 0.06 + 0.12 * pulse(frame + 12, 48),
+            opacity: (hero ? 0.1 : 0.06) + 0.12 * pulse(frame + 12, 48),
           }}
         />
+        {hero && (
+          <>
+            <span
+              style={{
+                position: "absolute",
+                inset: -48,
+                borderRadius: 90,
+                border: `1px solid ${accent}`,
+                opacity: 0.05 + 0.08 * pulse(frame + 24, 48),
+              }}
+            />
+            {/* one-shot "synced" ring that expands outward as connectors complete */}
+            <span
+              style={{
+                position: "absolute",
+                inset: -10 - synced * 70,
+                borderRadius: 52 + synced * 70,
+                border: `1.5px solid ${accent}`,
+                opacity: 0.5 * Math.sin(Math.min(synced, 1) * Math.PI),
+              }}
+            />
+          </>
+        )}
       </div>
 
       <span style={{ display: "none", fontFamily: F.mono }} />

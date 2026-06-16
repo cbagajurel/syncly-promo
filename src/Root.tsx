@@ -4,6 +4,7 @@ import { SynclyPromo } from "./Composition";
 import { FPS, TOTAL_FRAMES } from "./constants";
 import { SynclyAd } from "./ad/SynclyAd";
 import { AdScreenStill } from "./ad/AdScreenStill";
+import { AdThumbnail } from "./ad/AdThumbnail";
 import {
   FPS as AD_FPS,
   TOTAL as AD_TOTAL,
@@ -33,6 +34,16 @@ export const Root = () => {
         id="SynclyAd"
         component={SynclyAd}
         durationInFrames={AD_TOTAL}
+        fps={AD_FPS}
+        width={AD_CANVAS.W}
+        height={AD_CANVAS.H}
+      />
+
+      {/* Clean editorial poster still → out/ad-thumbnail.png */}
+      <Composition
+        id="AdThumbnail"
+        component={AdThumbnail}
+        durationInFrames={1}
         fps={AD_FPS}
         width={AD_CANVAS.W}
         height={AD_CANVAS.H}

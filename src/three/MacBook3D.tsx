@@ -55,7 +55,14 @@ function useScreenTexture(): THREE.CanvasTexture {
     x.font = "600 15px sans-serif";
     x.fillText("+  Compose", 70, 112);
     // nav items
-    const nav = ["Dashboard", "Inbox", "Posts", "Schedule", "Analytics", "Settings"];
+    const nav = [
+      "Dashboard",
+      "Inbox",
+      "Posts",
+      "Schedule",
+      "Analytics",
+      "Settings",
+    ];
     nav.forEach((label, i) => {
       const ny = 152 + i * 48;
       if (i === 0) {
@@ -104,7 +111,7 @@ function useScreenTexture(): THREE.CanvasTexture {
 
     // metric cards
     const cards = [
-      ["Unread messages", "26"],
+      ["Unread messages", "6"],
       ["Scheduled posts", "4"],
       ["Connected platforms", "2"],
     ];
@@ -162,7 +169,13 @@ function useScreenTexture(): THREE.CanvasTexture {
     x.fillStyle = INK;
     x.font = "600 17px sans-serif";
     x.fillText("Recent conversations", 1011, 392);
-    const names = ["Maya Rivera", "Daniel Park", "Priya Shah", "Tom Chen", "Aria Patel"];
+    const names = [
+      "Maya Rivera",
+      "Daniel Park",
+      "Priya Shah",
+      "Tom Chen",
+      "Aria Patel",
+    ];
     names.forEach((n, i) => {
       const ry = 430 + i * 96;
       x.fillStyle = "#efeee9";
@@ -223,21 +236,38 @@ export function MacBook3D() {
   return (
     <group position={[0, -0.9, 0]}>
       {/* floor */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]} receiveShadow>
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.02, 0]}
+        receiveShadow
+      >
         <planeGeometry args={[60, 60]} />
-        <meshStandardMaterial color={STAGE.FLOOR} roughness={0.95} metalness={0} />
+        <meshStandardMaterial
+          color={STAGE.FLOOR}
+          roughness={0.95}
+          metalness={0}
+        />
       </mesh>
 
       {/* soft contact shadow */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0.2]}>
         <planeGeometry args={[7.5, 6]} />
-        <meshBasicMaterial map={contact} transparent depthWrite={false} opacity={0.9} />
+        <meshBasicMaterial
+          map={contact}
+          transparent
+          depthWrite={false}
+          opacity={0.9}
+        />
       </mesh>
 
       {/* base deck */}
       <mesh position={[0, 0.12, 0]} castShadow receiveShadow>
         <boxGeometry args={[W, 0.22, D]} />
-        <meshStandardMaterial color={STAGE.ALU} metalness={0.35} roughness={0.46} />
+        <meshStandardMaterial
+          color={STAGE.ALU}
+          metalness={0.35}
+          roughness={0.46}
+        />
       </mesh>
 
       {/* keyboard well */}
@@ -257,12 +287,20 @@ export function MacBook3D() {
           {/* lid shell */}
           <mesh castShadow receiveShadow>
             <boxGeometry args={[W, 2.7, 0.13]} />
-            <meshStandardMaterial color={STAGE.ALU} metalness={0.35} roughness={0.46} />
+            <meshStandardMaterial
+              color={STAGE.ALU}
+              metalness={0.35}
+              roughness={0.46}
+            />
           </mesh>
           {/* dark bezel frame behind the screen */}
           <mesh position={[0, 0.06, 0.066]}>
             <planeGeometry args={[W - 0.18, 2.52]} />
-            <meshStandardMaterial color="#0c0d0f" metalness={0.2} roughness={0.6} />
+            <meshStandardMaterial
+              color="#0c0d0f"
+              metalness={0.2}
+              roughness={0.6}
+            />
           </mesh>
           {/* screen */}
           <mesh position={[0, 0.06, 0.075]}>
