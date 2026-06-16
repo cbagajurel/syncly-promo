@@ -44,8 +44,7 @@ export function BrowserWindow({
           gap: dot,
           paddingLeft: Math.round(barH * 0.5),
           paddingRight: Math.round(barH * 0.5),
-          background:
-            "linear-gradient(180deg, #f5f5f4 0%, #ececea 100%)",
+          background: "linear-gradient(180deg, #f5f5f4 0%, #ececea 100%)",
           borderBottom: "1px solid #e3e1db",
         }}
       >
@@ -93,7 +92,14 @@ export function BrowserWindow({
       </div>
 
       {/* body */}
-      <div style={{ position: "relative", width: w, height: bodyH, overflow: "hidden" }}>
+      <div
+        style={{
+          position: "relative",
+          width: w,
+          height: bodyH,
+          overflow: "hidden",
+        }}
+      >
         <div
           style={{
             position: "absolute",
